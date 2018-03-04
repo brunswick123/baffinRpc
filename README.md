@@ -17,7 +17,7 @@ public interface HelloService {
     String hello(String name, int number);
 }
 ```
-<br>
+
 #### 服务提供者定义服务实现HelloServiceImpl
 ```
 public class HelloServiceImpl implements HelloService {
@@ -27,7 +27,7 @@ public class HelloServiceImpl implements HelloService {
     }
 }
 ```
-<br>
+
 
 #### 配置服务提供者
 ```
@@ -48,7 +48,7 @@ public class HelloServiceImpl implements HelloService {
     <rpc:exportService name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" ref="helloService"/>
 </beans>
 ```
-<br>
+
 #### 配置服务消费者
 ```
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -65,7 +65,7 @@ public class HelloServiceImpl implements HelloService {
     <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService"/>
 </beans>
 ```
-<br>
+
 #### 启动服务提供者
 ```
 public class ServerDemo {
@@ -74,7 +74,7 @@ public class ServerDemo {
     }
 }
 ```
-<br>
+
 #### 启动服务消费者 调用服务
 ```
 public class HelloDemo {
