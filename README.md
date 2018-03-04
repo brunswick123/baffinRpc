@@ -86,6 +86,6 @@ public class HelloDemo {
     }
 }
 ```
-更多表示请参考baffRpc-demo。
+更多示例请参考baffRpc-demo。
 
 
