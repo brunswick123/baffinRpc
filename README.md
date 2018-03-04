@@ -1,4 +1,4 @@
-# baffin RPC
+## baffin RPC
 
 baffin RPC(Remote Procedure Call) 是一个基于java的分布式远程调用框架<br>
 * 支持集群环境部署,提供多种高可用和负载均衡策略
