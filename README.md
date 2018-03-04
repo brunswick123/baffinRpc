@@ -11,14 +11,14 @@ baffin RPC(Remote Procedure Call) 是一个基于java的分布式远程调用框
 
 ## 快速入门
 baffin RPC依赖zookeeper实现服务注册和发现,请先确保已开启zookeeper.<br>
-##### 定义接口
+#### 定义接口
 ```
 public interface HelloService {
     String hello(String name, int number);
 }
 ```
 
-##### 实现接口
+#### 实现接口
 ```
 public class HelloServiceImpl implements HelloService {
     public String hello(String name, int number) {
@@ -29,7 +29,7 @@ public class HelloServiceImpl implements HelloService {
 ```
 
 
-##### 配置服务提供者applicationContext.xml
+#### 配置服务提供者applicationContext.xml
 ```
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -49,7 +49,7 @@ public class HelloServiceImpl implements HelloService {
 </beans>
 ```
 
-##### 配置服务消费者applicationContext.xml
+#### 配置服务消费者applicationContext.xml
 ```
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -66,7 +66,7 @@ public class HelloServiceImpl implements HelloService {
 </beans>
 ```
 
-##### 启动服务提供者
+#### 启动服务提供者
 ```
 public class ServerDemo {
     public static void main(String... args) {
@@ -75,7 +75,7 @@ public class ServerDemo {
 }
 ```
 
-##### 启动服务消费者 调用服务
+#### 启动服务消费者 调用服务
 ```
 public class HelloDemo {
     public static void main(String... args)
@@ -86,6 +86,6 @@ public class HelloDemo {
     }
 }
 ```
-
+更多表示请参考baffRpc-demo
 
 
