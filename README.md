@@ -10,7 +10,7 @@ baffin RPC(Remote Procedure Call) 是一个基于java的分布式远程调用框
 程序的设计参考了dubbo的实现 https://github.com/alibaba/dubbo
 
 ## 快速入门
-baffin RPC依赖zookeeper实现服务注册和发现,请先确保已开启zookeeper.<br>
+baffin RPC依赖zookeeper实现服务注册和发现,请先确保已开启zookeeper。<br>
 #### 定义接口
 ```
 public interface HelloService {
@@ -86,6 +86,6 @@ public class HelloDemo {
     }
 }
 ```
-更多表示请参考baffRpc-demo
+更多表示请参考baffRpc-demo。
 
 
