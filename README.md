@@ -11,14 +11,14 @@ baffin RPC(Remote Procedure Call) 是一个基于java的分布式远程调用框
 
 ## 快速入门
 
-#### 定义服务接口HelloService
+#### 定义接口
 ```
 public interface HelloService {
     String hello(String name, int number);
 }
 ```
 
-#### 服务提供者定义服务实现HelloServiceImpl
+#### 实现接口
 ```
 public class HelloServiceImpl implements HelloService {
     public String hello(String name, int number) {
