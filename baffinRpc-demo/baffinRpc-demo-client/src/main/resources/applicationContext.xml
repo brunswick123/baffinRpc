@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rpc="http://www.my.baffinrpc.com/schema"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.my.baffinrpc.com/schema http://www.my.baffinrpc.com/schema/baffinRpc.xsd" >
+
+    <!--配置zookeeper-->
+    <rpc:registry address="192.168.13.99:2181" type="zookeeper"/>
+
+    <!--引用服务-->
+    <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService"/>
+    <rpc:reference name="futureService" interface="com.my.baffinrpc.demo.api.FutureService"/>
+    <rpc:reference name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService"/>
+    <rpc:reference name="exceptionService" interface="com.my.baffinrpc.demo.api.ExceptionService"/>
+
+</beans>

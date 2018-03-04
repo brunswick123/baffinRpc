@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns="http://www.my.baffinrpc.com/schema"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://www.my.baffinrpc.com/schema"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xsd:import namespace="http://www.springframework.org/schema/beans" />
+    <xsd:element name="exportService">
+        <xsd:annotation>
+            <xsd:documentation>exported service in server side</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="protocol" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:attribute name="type" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="port" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="transport" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="serialization" type="xsd:string" use="optional"/>
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="exportMethod" maxOccurs="unbounded" minOccurs="0">
+                    <xsd:annotation>
+                        <xsd:documentation>nest element for exported service, represent for a export method</xsd:documentation>
+                    </xsd:annotation>
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="args" maxOccurs="unbounded" minOccurs="0" type="args"/>
+                        </xsd:sequence>
+                        <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        <xsd:attribute name="async" type="xsd:boolean" use="optional"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
+            <xsd:attribute name="interface" type="xsd:string" use="required"/>
+            <xsd:attribute name="ref" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+
+
+    <xsd:complexType name="args">
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="interface" type="xsd:string" use="required"/>
+                <xsd:attribute name="callback" type="xsd:boolean" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+
+    <xsd:element name="registry">
+        <xsd:annotation>
+            <xsd:documentation>service registry</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+
+                    <xsd:attribute name="address" type="xsd:string"/>
+                    <xsd:attribute name="type" default="zookeeper">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="zookeeper"/>
+                                <xsd:enumeration value="direct"/>
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
+                    <!--<xsd:sequence>
+                        <xsd:element minOccurs="1" maxOccurs="unbounded" ref="serviceAddress"/>
+                    </xsd:sequence>-->
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="serviceAddress">
+        <xsd:complexType>
+            <xsd:attribute name="class" type="xsd:string" use="required"/>
+            <xsd:attribute name="address" type="xsd:string" use="required"/>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="reference">
+        <xsd:annotation>
+            <xsd:documentation>refer service in client side</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="name" type="xsd:string" use="required"/>
+                    <xsd:attribute name="interface" type="xsd:string" use="required"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="interceptor">
+        <xsd:annotation>
+            <xsd:documentation>interceptor config</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent>
+                <xsd:extension base="beans:identifiedType">
+                    <xsd:attribute name="name" type="xsd:string" use="required"/>
+                    <xsd:attribute name="class" type="xsd:string" use="required"/>
+                </xsd:extension>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

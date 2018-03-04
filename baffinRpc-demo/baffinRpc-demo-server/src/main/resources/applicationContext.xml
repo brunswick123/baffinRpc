@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:rpc="http://www.my.baffinrpc.com/schema"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.my.baffinrpc.com/schema http://www.my.baffinrpc.com/schema/baffinRpc.xsd" >
+
+    <!--配置bean-->
+    <bean id="helloService" class="com.my.baffinrpc.demo.server.impl.HelloServiceImpl"/>
+    <bean id="futureService" class="com.my.baffinrpc.demo.server.impl.FutureServiceImpl"/>
+    <bean id="callbackService" class="com.my.baffinrpc.demo.server.impl.CallbackServiceImpl"/>
+    <bean id="exceptionService" class="com.my.baffinrpc.demo.server.impl.ExceptionServiceImpl"/>
+
+    <!--配置zookeeper-->
+    <rpc:registry address="192.168.13.99:2181" type="zookeeper"/>
+
+    <!--配置helloService服务-->
+    <rpc:exportService name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" ref="helloService">
+        <!-- 配置服务使用端口-->
+        <rpc:protocol port="9088"/>
+    </rpc:exportService>
+
+    <!--配置futureService服务-->
+    <rpc:exportService name="futureService" interface="com.my.baffinrpc.demo.api.FutureService" ref="futureService">
+        <!--配置为异步方法-->
+        <rpc:exportMethod name="getDate" async="true"/>
+    </rpc:exportService>
+
+
+    <!--配置callback服务-->
+    <rpc:exportService name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService" ref="callbackService">
+        <rpc:protocol port="9718"/>
+        <!--设置callback所在方法-->
+        <rpc:exportMethod name="calculateAdd">
+            <!--配置callback参数-->
+            <rpc:args interface="com.my.baffinrpc.demo.api.Notifier" callback="true"/>
+        </rpc:exportMethod>
+    </rpc:exportService>
+
+    <!--配置exception服务-->
+    <rpc:exportService name="exceptionService" interface="com.my.baffinrpc.demo.api.ExceptionService" ref="exceptionService">
+        <rpc:protocol port="9932"/>
+    </rpc:exportService>
+</beans>
