@@ -1,6 +1,6 @@
 package com.my.baffinrpc.core.communication.transport;
 
-import com.my.baffinrpc.core.common.exception.RPCNetworkException;
+import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
 import com.my.baffinrpc.core.communication.ChannelHandler;
 import com.my.baffinrpc.core.message.Codec;
 import com.my.baffinrpc.core.message.Message;
@@ -66,7 +66,7 @@ public abstract class AbstractTransportClient implements TransportClient {
                 logger.info("connect to [" + host + ":" + port + "] successfully");
             } else {
                 shutdownGracefully();
-                throw new RPCNetworkException("connect to [" + host + ":" + port + "] failed");
+                throw new RPCFrameworkException("connect to [" + host + ":" + port + "] failed");
             }
         }
     }

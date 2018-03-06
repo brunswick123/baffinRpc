@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 public class CallbackServiceImpl implements CallbackService,Serializable {
     public void calculateAdd(int firstNumber,int secondNumber, Notifier notifier) {
-        System.out.println("received task " + firstNumber + " + add + " + secondNumber + ", start calculate");
+        System.out.println("received task " + firstNumber + " + " + secondNumber + ", start calculate");
         long start = System.currentTimeMillis();
         int result = 0;
         try {

@@ -44,6 +44,7 @@
             <xsd:extension base="beans:identifiedType">
                 <xsd:attribute name="interface" type="xsd:string" use="required"/>
                 <xsd:attribute name="callback" type="xsd:boolean" use="required"/>
+                <xsd:attribute name="callbackPort" type="xsd:string" use="optional"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -95,7 +96,7 @@
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="interceptor">
+    <xsd:element name="filter">
         <xsd:annotation>
             <xsd:documentation>interceptor config</xsd:documentation>
         </xsd:annotation>
@@ -106,6 +107,15 @@
                     <xsd:attribute name="class" type="xsd:string" use="required"/>
                 </xsd:extension>
             </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:element name="extensionScan">
+        <xsd:annotation>
+            <xsd:documentation>interceptor config</xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:attribute name="basePackage" type="xsd:string" use="required"/>
         </xsd:complexType>
     </xsd:element>
 </xsd:schema>

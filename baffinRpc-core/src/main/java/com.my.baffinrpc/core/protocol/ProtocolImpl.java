@@ -2,7 +2,6 @@ package com.my.baffinrpc.core.protocol;
 
 import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
-import com.my.baffinrpc.core.common.exception.RPCNetworkException;
 import com.my.baffinrpc.core.common.model.*;
 import com.my.baffinrpc.core.common.threadpool.FixedSizeThreadPoolFactory;
 import com.my.baffinrpc.core.common.threadpool.NamedThreadFactory;
@@ -13,7 +12,6 @@ import com.my.baffinrpc.core.communication.ChannelHandler;
 import com.my.baffinrpc.core.communication.Server;
 import com.my.baffinrpc.core.communication.exchange.ExchangeServerImpl;
 import com.my.baffinrpc.core.communication.transport.TransportFactory;
-import com.my.baffinrpc.core.communication.transport.mina.MinaTransportFactory;
 import com.my.baffinrpc.core.communication.transport.netty.NettyTransportFactory;
 import com.my.baffinrpc.core.message.MessageFactory;
 import com.my.baffinrpc.core.message.Request;
@@ -24,23 +22,19 @@ import com.my.baffinrpc.core.protocol.invoker.Invoker;
 import com.my.baffinrpc.core.protocol.invoker.InvokerTask;
 import com.my.baffinrpc.core.protocol.invoker.RemoteInvoker;
 import com.my.baffinrpc.core.protocol.proxy.CglibProxyFactory;
-import com.my.baffinrpc.core.protocol.proxy.JavaassistProxyFactory;
-import com.my.baffinrpc.core.protocol.proxy.JdkProxyFactory;
 import com.my.baffinrpc.core.protocol.proxy.ProxyFactory;
+import com.my.baffinrpc.core.spi.ExtensionLoader;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 public class ProtocolImpl extends AbstractProtocol {
 
     private static final int DEFAULT_PORT_NO = 9999;
-
     private final Map<URL,Exporter> exporterMap = new ConcurrentHashMap<>();
     private final MessageFactory messageFactory = new BaseMessageFactory();
-    private final TransportFactory transportFactory = new NettyTransportFactory();
+    private final TransportFactory transportFactory = ExtensionLoader.getExtension(TransportFactory.class,"netty");
     private ExchangeServerChannelHandler channelHandler = null; //延迟初始化 对于client并不需要ExchangeServerChannelHandler
     private ThreadPoolFactory threadPoolFactory = new FixedSizeThreadPoolFactory();
 
@@ -73,7 +67,7 @@ public class ProtocolImpl extends AbstractProtocol {
             return new ExporterImpl(invoker);
         }
         else
-            throw new RPCNetworkException("start server with port " + invoker.getUrl().getPort() + " failed");
+            throw new RPCFrameworkException("start server with port " + invoker.getUrl().getPort() + " failed");
     }
 
     @Override
@@ -109,23 +103,27 @@ public class ProtocolImpl extends AbstractProtocol {
             if (exporter != null) {
                 Invoker invoker = exporter.getInvoker();
                 try {
-                    if (invocation.isCallback()) {
-                        CallbackInfo callbackInfo = invocation.getCallbackInfo();
-                        URL callbackUrl = callbackInfo.getCallbackURL();
-                        Invoker callbackInvoker = getCallbackInvoker(callbackUrl, callbackInfo);
-                        invocation.getArgs()[callbackInfo.getMethodArgsIndex()] = proxyFactory.getProxy(callbackInvoker);
+                    if (invocation.getCallbackInfo() != null) {
+                        setCallbackArgToProxy(invocation);
                     }
                     InvokerTask invokerTask = new InvokerTask(invoker, invocation, channel, messageFactory,msg);
                     threadPool.submit(invokerTask);
                 } catch (Throwable throwable) {
-                    throwable.printStackTrace();
-                    result = ResultFactory.newExceptionResult(new RPCFrameworkException(throwable));
+                    result = ResultFactory.newExceptionResult(throwable);
                     channel.send(messageFactory.newResponse(result, msg));
                 }
             } else {
                 result = ResultFactory.newExceptionResult(new RPCFrameworkException( "no exporter is found for " + url.buildString()));
                 channel.send(messageFactory.newResponse(result, msg));
             }
+        }
+
+        private void setCallbackArgToProxy(Invocation invocation)
+        {
+            CallbackInfo callbackInfo = invocation.getCallbackInfo();
+            URL callbackUrl = callbackInfo.getCallbackURL();
+            Invoker callbackInvoker = getCallbackInvoker(callbackUrl, callbackInfo);
+            invocation.getArgs()[callbackInfo.getMethodArgsIndex()] = proxyFactory.getProxy(callbackInvoker);
         }
 
         private Invoker getCallbackInvoker(URL callbackUrl, CallbackInfo callbackInfo) {

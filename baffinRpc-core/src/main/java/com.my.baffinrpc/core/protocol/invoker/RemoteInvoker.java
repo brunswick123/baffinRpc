@@ -9,16 +9,12 @@ import com.my.baffinrpc.core.communication.exchange.ExchangeClient;
 import com.my.baffinrpc.core.communication.exchange.ExchangeClientChannelHandler;
 import com.my.baffinrpc.core.communication.exchange.ExchangeClientImpl;
 import com.my.baffinrpc.core.communication.transport.TransportFactory;
-import com.my.baffinrpc.core.communication.transport.mina.MinaTransportClient;
-import com.my.baffinrpc.core.communication.transport.netty.NettyTransportClient;
-import com.my.baffinrpc.core.communication.transport.netty.NettyTransportFactory;
 import com.my.baffinrpc.core.filter.ExceptionFilter;
 import com.my.baffinrpc.core.message.MessageFactory;
 import com.my.baffinrpc.core.message.Request;
 import com.my.baffinrpc.core.message.base.BaseMessageCodec;
 import com.my.baffinrpc.core.message.base.BaseMessageFactory;
 import com.my.baffinrpc.core.protocol.FilterWrapProtocol;
-import com.my.baffinrpc.core.protocol.Protocol;
 import com.my.baffinrpc.core.protocol.ProtocolImpl;
 import com.my.baffinrpc.core.protocol.export.Exporter;
 import com.my.baffinrpc.core.protocol.proxy.CglibProxyFactory;
@@ -36,7 +32,6 @@ public class RemoteInvoker extends AbstractInvoker {
 
     private final ConcurrentHashMap<URL,Exporter> exportCallbackMap = new ConcurrentHashMap<>();
     private static final Logger logger = Logger.getLogger(RemoteInvoker.class);
-    private static final int DEFAULT_CALLBACK_PORT = 9800;
 
 
     public RemoteInvoker(URL url, Class<?> interfaceClz,TransportFactory transportFactory) {
@@ -45,35 +40,38 @@ public class RemoteInvoker extends AbstractInvoker {
                 (new ExchangeClientChannelHandler()),new BaseMessageCodec()));
     }
 
-    @Override
-    public Result invoke(Invocation invocation) throws Exception {
-        if (invocation.getUrl() == null)
-        {
-            invocation.setUrl(url);
-            invocation.setFromURL(url);
-        }
-        Request request = messageFactory.newRequest(invocation);
-        if (invocation.isCallback())
-        {
-            CallbackInfo callbackInfo = invocation.getCallbackInfo();
-            //synchronized和双重非null检测 保证只export一次
-            if (exportCallbackMap.get(invocation.getUrl()) == null) {
-                synchronized (exportCallbackMap) {
-                    if (exportCallbackMap.get(invocation.getUrl()) == null) {
-                        Object callbackInstance = invocation.getArgs()[callbackInfo.getMethodArgsIndex()];
-                        Class<?> callbackInterface = callbackInfo.getCallbackInterface();
-                        URL url = new URL(callbackInterface.getName(),"127.0.0.1",DEFAULT_CALLBACK_PORT);
-                        Invoker invoker = proxyFactory.getInvoker(callbackInstance, callbackInterface,url);
-                        FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(new ProtocolImpl());
-                        filterWrapProtocol.addFilter(new ExceptionFilter());
-                        Exporter exporter = filterWrapProtocol.export(invoker);
-                        if (exporter != null) {
-                            exportCallbackMap.put(invocation.getUrl(), exporter);
-                            logger.info(callbackInterface.getName() + " callback service exported successfully with url:" +url.buildString());
-                        }
+    private void exportCallbackExporter(CallbackInfo callbackInfo,Invocation invocation)
+    {
+        //synchronized和双重非null检测 保证只export一次
+        if (exportCallbackMap.get(invocation.getUrl()) == null) {
+            synchronized (exportCallbackMap) {
+                if (exportCallbackMap.get(invocation.getUrl()) == null) {
+                    Object callbackInstance = invocation.getArgs()[callbackInfo.getMethodArgsIndex()];
+                    Class<?> callbackInterface = callbackInfo.getCallbackInterface();
+                    URL url = callbackInfo.getCallbackURL();
+                    Invoker invoker = proxyFactory.getInvoker(callbackInstance, callbackInterface,url);
+                    FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(new ProtocolImpl());
+                    filterWrapProtocol.addFilter(new ExceptionFilter());
+                    Exporter exporter = filterWrapProtocol.export(invoker);
+                    if (exporter != null) {
+                        exportCallbackMap.put(invocation.getUrl(), exporter);
+                        logger.info(callbackInterface.getName() + " callback service exported successfully with url:" +url.buildString());
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public Result invoke(Invocation invocation) throws Exception {
+        //向invocation设置url
+        if (invocation.getUrl() == null)
+            invocation.setUrl(url);
+        Request request = messageFactory.newRequest(invocation);
+        if (invocation.getCallbackInfo() != null)
+        {
+            CallbackInfo callbackInfo = invocation.getCallbackInfo();
+            exportCallbackExporter(callbackInfo,invocation);
             //回调参数不需要传送,设置成null,服务端会根据url中callbackInterface和callbackIndex生成代理对象作为回调参数
             int callbackIndex = callbackInfo.getMethodArgsIndex();
             invocation.getArgs()[callbackIndex] = null;

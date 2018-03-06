@@ -7,10 +7,10 @@ public class CallbackInfo implements Serializable {
     private final int methodArgsIndex;
     private final URL callbackURL;
 
-    public CallbackInfo(Class<?> callbackInterface, int methodArgsIndex) {
+    public CallbackInfo(Class<?> callbackInterface, int methodArgsIndex, URL callbackURL) {
         this.callbackInterface = callbackInterface;
         this.methodArgsIndex = methodArgsIndex;
-        this.callbackURL = new URL(callbackInterface.getName(),"127.0.0.1",9800);
+        this.callbackURL = callbackURL;
     }
 
     public Class<?> getCallbackInterface() {

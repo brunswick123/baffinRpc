@@ -27,4 +27,9 @@ public class FSTSerialization implements Serialization {
     public <T> T deserialize(byte[] bytes, Class<T> clz) throws IOException, ClassNotFoundException {
         return (T)conf.asObject(bytes);
     }
+
+    @Override
+    public byte getSerializationId() {
+        return 1;
+    }
 }

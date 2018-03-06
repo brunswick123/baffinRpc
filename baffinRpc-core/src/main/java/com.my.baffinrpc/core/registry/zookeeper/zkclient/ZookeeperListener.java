@@ -1,4 +1,4 @@
-package com.my.baffinrpc.core.registry.zookeeper;
+package com.my.baffinrpc.core.registry.zookeeper.zkclient;
 
 import java.util.List;
 

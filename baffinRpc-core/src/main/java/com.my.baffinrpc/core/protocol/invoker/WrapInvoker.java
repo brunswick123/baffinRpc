@@ -22,8 +22,6 @@ import java.lang.reflect.Method;
 public class WrapInvoker<T> extends AbstractInvoker {
 
     private final T wrappedServiceInstance;
-    private ProxyFactory proxyFactory;
-    private RegistryService registryService;
 
     public WrapInvoker(URL url, Class<?> interfaceClz, T wrappedServiceInstance) {
         super(url,interfaceClz);

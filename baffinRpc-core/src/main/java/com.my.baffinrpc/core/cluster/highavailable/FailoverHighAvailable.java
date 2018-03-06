@@ -23,8 +23,6 @@ public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
             if (invoker != null)
             {
                 try {
-                    invocation.setUrl(invoker.getUrl());
-                    invocation.setFromURL(invocation.getUrl());
                     return invoker.invoke(invocation);
                 }
                 catch (Exception e)

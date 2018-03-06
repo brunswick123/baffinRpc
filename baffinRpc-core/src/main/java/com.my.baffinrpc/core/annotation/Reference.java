@@ -1,6 +1,5 @@
 package com.my.baffinrpc.core.annotation;
 
-import com.my.baffinrpc.core.common.serialization.SerializeType;
 
 import java.lang.annotation.*;
 
@@ -12,7 +11,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Documented
 public @interface Reference {
-    SerializeType serializeType() default SerializeType.Jdk; //序列化类型
+    /*SerializeType serializeType() default SerializeType.Jdk; //序列化类型*/
     String[] asyncMethods() default {}; //异步方法名数组
     boolean keepConnected() default true; //是否使用长连接调用
 }

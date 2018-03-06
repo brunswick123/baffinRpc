@@ -9,18 +9,16 @@ public class Invocation implements Serializable{
     private final String methodName;
     private final Object[] args;
     private boolean async;
-    private boolean callback;
     private final boolean isOneWay;
     private byte serializationType;
     private CallbackInfo callbackInfo;
     private URL url;
 
-    public Invocation(String interfaceName, String methodName, Object[] args, boolean async, boolean callback, boolean isOneWay, byte serializationType, CallbackInfo callbackInfo) {
+    public Invocation(String interfaceName, String methodName, Object[] args, boolean async, boolean isOneWay, byte serializationType, CallbackInfo callbackInfo) {
         this.interfaceName = interfaceName;
         this.methodName = methodName;
         this.args = args;
         this.async = async;
-        this.callback = callback;
         this.isOneWay = isOneWay;
         this.serializationType = serializationType;
         this.callbackInfo = callbackInfo;
@@ -33,22 +31,11 @@ public class Invocation implements Serializable{
         this.isOneWay = isOneWay;
     }
 
-    public void setFromURL(URL url)
-    {
-        this.async = URLUtil.isMethodAsync(url,methodName);
-        CallbackInfo callbackInfo = URLUtil.getCallbackInfo(url,methodName);
-        callback = callbackInfo != null;
-        if (callback)
-            this.callbackInfo = callbackInfo;
-    }
 
     public void setAsync(boolean async) {
         this.async = async;
     }
 
-    public void setCallback(boolean callback) {
-        this.callback = callback;
-    }
 
     public void setSerializationType(byte serializationType) {
         this.serializationType = serializationType;
@@ -60,6 +47,10 @@ public class Invocation implements Serializable{
 
     public void setUrl(URL url) {
         this.url = url;
+        this.async = URLUtil.isMethodAsync(url,methodName);
+        CallbackInfo callbackInfo = URLUtil.getCallbackInfo(url,methodName);
+        if (callbackInfo != null)
+            this.callbackInfo = callbackInfo;
     }
 
     public String getMethodName() {
@@ -74,9 +65,6 @@ public class Invocation implements Serializable{
         return async;
     }
 
-    public boolean isCallback() {
-        return callback;
-    }
 
     public byte getSerializationType() {
         return serializationType;

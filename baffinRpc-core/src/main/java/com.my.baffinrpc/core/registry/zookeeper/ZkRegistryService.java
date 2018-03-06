@@ -1,10 +1,12 @@
-package com.my.baffinrpc.core.registry;
+package com.my.baffinrpc.core.registry.zookeeper;
 
 import com.my.baffinrpc.core.common.model.URL;
-import com.my.baffinrpc.core.registry.zookeeper.CuratorClient;
-import com.my.baffinrpc.core.registry.zookeeper.ZkClient;
-import com.my.baffinrpc.core.registry.zookeeper.ZookeeperClient;
-import com.my.baffinrpc.core.registry.zookeeper.ZookeeperListenerImpl;
+import com.my.baffinrpc.core.registry.NotifyListener;
+import com.my.baffinrpc.core.registry.RegistryService;
+import com.my.baffinrpc.core.registry.zookeeper.zkclient.CuratorClient;
+import com.my.baffinrpc.core.registry.zookeeper.zkclient.ZkClient;
+import com.my.baffinrpc.core.registry.zookeeper.zkclient.ZookeeperClient;
+import com.my.baffinrpc.core.registry.zookeeper.zkclient.ZookeeperListenerImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class ZkRegistryService implements RegistryService {
 
     public ZkRegistryService(String address)
     {
-        zookeeperClient = new ZkClient(address);
+        zookeeperClient = new CuratorClient(address);
     }
 
     @Override

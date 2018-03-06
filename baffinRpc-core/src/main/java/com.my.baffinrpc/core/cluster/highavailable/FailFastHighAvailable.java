@@ -20,8 +20,6 @@ public class FailFastHighAvailable extends AbstractHighAvailableStrategy {
         {
             try
             {
-                invocation.setUrl(invoker.getUrl());
-                invocation.setFromURL(invocation.getUrl());
                 return invoker.invoke(invocation);
             }catch (Exception e)
             {

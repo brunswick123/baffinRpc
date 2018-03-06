@@ -2,6 +2,7 @@ package com.my.baffinrpc.demo.client;
 
 
 import com.my.baffinrpc.demo.api.CallbackService;
+import com.my.baffinrpc.demo.api.Notifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -13,6 +14,11 @@ public class CallbackDemo {
     {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         CallbackService callbackService = applicationContext.getBean("callbackService",CallbackService.class);
-        callbackService.calculateAdd(1, 1, new NotifierImpl());
+        callbackService.calculateAdd(1, 1, new Notifier() {
+            @Override
+            public void notify(int result, long timeUsed) {
+                System.out.println("callback result is " + result);
+            }
+        });
     }
 }

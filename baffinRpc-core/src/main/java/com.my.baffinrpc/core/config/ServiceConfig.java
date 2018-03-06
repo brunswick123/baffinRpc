@@ -78,7 +78,7 @@ public class ServiceConfig<T> implements InitializingBean{
     @Override
     public void afterPropertiesSet() throws Exception {
         Protocol protocol = protocolConfig.getProtocol();
-        URL url = URL.buildURL(interfaceClz.getName(),DEFAULT_URL,protocol.getPort(), "netty",SerializeType.Jdk,methodConfigs);
+        URL url = URL.buildURL(interfaceClz.getName(),DEFAULT_URL,protocol.getPort(), "netty", SerializeType.Jdk.name(),methodConfigs);
         Exporter exporter = protocolConfig.getProtocol().export(proxyFactory.getInvoker(serviceRef,interfaceClz, url));
         if (exporter != null)
         {

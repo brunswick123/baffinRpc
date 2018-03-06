@@ -33,7 +33,6 @@ public class DirectoryImpl<T> implements Directory<T> {
         }
     }
 
-
     @Override
     public void notify(List<URL> newUrls) {
         Map<URL,Invoker> newInvokerMap = new HashMap<>();

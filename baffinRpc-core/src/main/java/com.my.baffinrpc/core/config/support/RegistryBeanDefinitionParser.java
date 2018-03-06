@@ -3,7 +3,7 @@ package com.my.baffinrpc.core.config.support;
 import com.my.baffinrpc.core.common.exception.RPCConfigException;
 import com.my.baffinrpc.core.config.RegistryConfig;
 import com.my.baffinrpc.core.registry.RegistryService;
-import com.my.baffinrpc.core.registry.ZkRegistryService;
+import com.my.baffinrpc.core.registry.zookeeper.ZkRegistryService;
 import com.my.baffinrpc.core.util.StringUtil;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;

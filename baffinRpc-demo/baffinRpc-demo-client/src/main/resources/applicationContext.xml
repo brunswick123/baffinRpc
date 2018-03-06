@@ -2,9 +2,9 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:rpc="http://www.my.baffinrpc.com/schema"
+       xmlns:rpc="http://www.my.baffinrpc.com/schema" xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.my.baffinrpc.com/schema http://www.my.baffinrpc.com/schema/baffinRpc.xsd" >
+       http://www.my.baffinrpc.com/schema http://www.my.baffinrpc.com/schema/baffinRpc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--配置zookeeper-->
     <rpc:registry address="192.168.13.99:2181" type="zookeeper"/>
@@ -14,5 +14,8 @@
     <rpc:reference name="futureService" interface="com.my.baffinrpc.demo.api.FutureService"/>
     <rpc:reference name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService"/>
     <rpc:reference name="exceptionService" interface="com.my.baffinrpc.demo.api.ExceptionService"/>
+
+    <rpc:extensionScan basePackage="com.my.baffinrpc.demo"/>
+
 
 </beans>

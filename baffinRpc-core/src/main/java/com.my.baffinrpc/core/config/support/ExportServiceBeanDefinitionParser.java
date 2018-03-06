@@ -4,6 +4,7 @@ import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.exception.RPCConfigException;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
 import com.my.baffinrpc.core.common.model.CallbackInfo;
+import com.my.baffinrpc.core.common.model.URL;
 import com.my.baffinrpc.core.config.MethodConfig;
 import com.my.baffinrpc.core.config.ProtocolConfig;
 import com.my.baffinrpc.core.config.RegistryConfig;
@@ -46,9 +47,10 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                 builder.addPropertyValue("serviceRef",serviceImplBeanReference);
             }
             //set protocolConfig
-            builder.addPropertyValue("protocolConfig",parseProtocol(element,interfaceClass));
+            ProtocolConfig protocolConfig = parseProtocol(element,interfaceClass);
+            builder.addPropertyValue("protocolConfig",protocolConfig);
             //set methodConfig
-            builder.addPropertyValue("methodConfigs",parseMethods(element, interfaceClass));
+            builder.addPropertyValue("methodConfigs",parseMethods(element, interfaceClass,protocolConfig.getProtocol().getPort()));
             //set registryConfig
             builder.addPropertyReference("registryConfig",StringUtil.convertFirstLetterToLowerCase(RegistryConfig.class.getSimpleName()));
             parserContext.getRegistry().registerBeanDefinition(exportInterfaceName,builder.getBeanDefinition());
@@ -102,7 +104,7 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
         }
     }
 
-    private List<MethodConfig> parseMethods(Element element, Class<?> interfaceClass)
+    private List<MethodConfig> parseMethods(Element element, Class<?> interfaceClass, int protocolPort)
     {
         List<MethodConfig> methodConfigList = new ArrayList<>();
         NodeList nodeList = element.getElementsByTagName("rpc:exportMethod");
@@ -140,7 +142,14 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                         int callbackParameterIndex = ReflectUtil.findArgIndexByTypeInMethod(callbackInterface,method);
                         if (callbackParameterIndex == -1)
                             throw new RPCConfigException(callbackInterface.getName() + " is not a arg type in " + interfaceClass.getName() + "." + methodName);
-                        CallbackInfo callbackInfo = new CallbackInfo(callbackInterface,callbackParameterIndex);
+                        int callbackPort = 0;
+                        String callbackPortString = args.getAttribute("callbackPort");
+                        if (callbackPortString != null && !"".equals(callbackPortString.trim()))
+                            callbackPort = Integer.parseInt(callbackPortString);
+                        else
+                            callbackPort = protocolPort + 10;
+                        URL callbackURL = URL.buildURL(callbackInterface.getName(),"127.0.0.1",callbackPort,"netty","jdk",null);
+                        CallbackInfo callbackInfo = new CallbackInfo(callbackInterface,callbackParameterIndex,callbackURL);
                         methodConfig.setCallback(true);
                         methodConfig.setCallbackInfo(callbackInfo);
                     } catch (ClassNotFoundException e) {

@@ -34,7 +34,7 @@ public class RpcContext {
 
     public Future<?> getFuture() {
         if (!asyncCall.get())
-            throw new IllegalStateException("current rpc is not a async call, future is not available for sync call");
+            throw new IllegalStateException("Current rpc is not an async call, future is not available for sync call");
         return future;
     }
 

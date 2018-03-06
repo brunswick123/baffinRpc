@@ -11,20 +11,13 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class JdkProxyFactory implements ProxyFactory {
+public class JdkProxyFactory extends AbstractProxyFactory {
     @Override
     public <T> T getProxy(final Invoker invoker) {
         InvocationHandler invocationHandler = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                boolean isOneWay = false;
-                if (method.getReturnType() == Void.class)
-                    isOneWay = true;
-                Invocation invocation = new Invocation(invoker.getInterface().getName(),method.getName(),args,isOneWay);
-                Result result = invoker.invoke(invocation);
-                if (result == null)
-                    throw new RPCFrameworkException("result == null");
-                return result.recreateInvokeResult();
+                return proxyInvoke(invoker,method,args);
             }
         };
         return (T)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{invoker.getInterface()},invocationHandler);

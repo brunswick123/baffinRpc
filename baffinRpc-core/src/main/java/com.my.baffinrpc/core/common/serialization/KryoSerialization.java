@@ -69,4 +69,9 @@ public class KryoSerialization implements Serialization {
 
         return obj;
     }
+
+    @Override
+    public byte getSerializationId() {
+        return 3;
+    }
 }

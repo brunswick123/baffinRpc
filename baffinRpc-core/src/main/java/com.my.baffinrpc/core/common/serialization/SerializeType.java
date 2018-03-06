@@ -6,6 +6,7 @@ public enum SerializeType {
     FST((byte)2),
     Kryo((byte)3);
 
+
     private final byte value;
 
      SerializeType(byte value)

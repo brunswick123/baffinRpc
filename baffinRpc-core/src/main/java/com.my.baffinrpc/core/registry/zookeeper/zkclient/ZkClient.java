@@ -1,5 +1,6 @@
-package com.my.baffinrpc.core.registry.zookeeper;
+package com.my.baffinrpc.core.registry.zookeeper.zkclient;
 
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.log4j.Logger;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+@ExtensionImpl(name = "zkClient",extension = ZookeeperClient.class)
 public class ZkClient implements ZookeeperClient {
 
     private org.I0Itec.zkclient.ZkClient client;

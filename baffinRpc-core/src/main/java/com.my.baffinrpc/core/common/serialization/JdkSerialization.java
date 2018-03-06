@@ -56,4 +56,9 @@ public class JdkSerialization implements Serialization {
 
         return (T)obj;
     }
+
+    @Override
+    public byte getSerializationId() {
+        return 0;
+    }
 }

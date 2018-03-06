@@ -1,4 +1,4 @@
-package com.my.baffinrpc.core.registry.zookeeper;
+package com.my.baffinrpc.core.registry.zookeeper.zkclient;
 
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
 import com.my.baffinrpc.core.util.StringUtil;
