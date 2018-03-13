@@ -36,6 +36,7 @@ public class MinaTransportServer extends AbstractTransportServer {
     protected boolean doBind() {
         try {
             acceptor.bind(new InetSocketAddress(host, port));
+            logger.info("open Mina server successfully with port " + port);
             return true;
         }catch (IOException e)
         {

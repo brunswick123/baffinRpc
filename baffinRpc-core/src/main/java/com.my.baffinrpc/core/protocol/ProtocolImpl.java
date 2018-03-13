@@ -13,6 +13,7 @@ import com.my.baffinrpc.core.communication.Server;
 import com.my.baffinrpc.core.communication.exchange.ExchangeServerImpl;
 import com.my.baffinrpc.core.communication.transport.TransportFactory;
 import com.my.baffinrpc.core.communication.transport.netty.NettyTransportFactory;
+import com.my.baffinrpc.core.config.ProtocolConfig;
 import com.my.baffinrpc.core.message.MessageFactory;
 import com.my.baffinrpc.core.message.Request;
 import com.my.baffinrpc.core.message.base.BaseMessageFactory;
@@ -33,19 +34,22 @@ public class ProtocolImpl extends AbstractProtocol {
 
     private static final int DEFAULT_PORT_NO = 9999;
     private final Map<URL,Exporter> exporterMap = new ConcurrentHashMap<>();
-    private final MessageFactory messageFactory = new BaseMessageFactory();
-    private final TransportFactory transportFactory = ExtensionLoader.getExtension(TransportFactory.class,"netty");
+    private final MessageFactory messageFactory;
+    private final TransportFactory transportFactory;
     private ExchangeServerChannelHandler channelHandler = null; //延迟初始化 对于client并不需要ExchangeServerChannelHandler
     private ThreadPoolFactory threadPoolFactory = new FixedSizeThreadPoolFactory();
 
-    public ProtocolImpl() {
-        super(DEFAULT_PORT_NO);
+    public ProtocolImpl(String transport, String message) {
+        this(DEFAULT_PORT_NO,transport, message);
     }
 
-    public ProtocolImpl(int port)
+    public ProtocolImpl(int port, String transport, String message)
     {
         super(port);
+        transportFactory = ExtensionLoader.getExtension(TransportFactory.class,transport);
+        messageFactory = ExtensionLoader.getExtension(MessageFactory.class,message);
     }
+
 
     private ChannelHandler<Request> getExchangeServerChannelHandler()
     {
@@ -59,7 +63,7 @@ public class ProtocolImpl extends AbstractProtocol {
 
     @Override
     public Exporter export(Invoker invoker) throws RPCFrameworkException {
-        Server server = new ExchangeServerImpl(invoker.getUrl(),getExchangeServerChannelHandler(),transportFactory);
+        Server server = new ExchangeServerImpl(invoker.getUrl(),getExchangeServerChannelHandler(),transportFactory,messageFactory.getMessageCodec());
         if (server.bind())
         {
             Exporter exporter = new ExporterImpl(invoker);

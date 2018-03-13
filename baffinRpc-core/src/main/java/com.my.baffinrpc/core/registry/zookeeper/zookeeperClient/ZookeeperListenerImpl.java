@@ -1,8 +1,7 @@
-package com.my.baffinrpc.core.registry.zookeeper.zkclient;
+package com.my.baffinrpc.core.registry.zookeeper.zookeeperClient;
 
 import com.my.baffinrpc.core.common.model.URL;
 import com.my.baffinrpc.core.registry.NotifyListener;
-import com.my.baffinrpc.core.registry.zookeeper.zkclient.ZookeeperListener;
 
 import java.util.ArrayList;
 import java.util.List;

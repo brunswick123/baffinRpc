@@ -1,7 +1,10 @@
 package com.my.baffinrpc.core.common.serialization;
 
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
+
 import java.io.*;
 
+@ExtensionImpl(name = "jdk",extension = Serialization.class)
 public class JdkSerialization implements Serialization {
     public <T> byte[] serialize(T object) throws IOException {
         byte[] bytes = null;

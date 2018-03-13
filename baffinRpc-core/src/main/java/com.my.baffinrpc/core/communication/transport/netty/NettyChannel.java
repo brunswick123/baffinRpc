@@ -25,7 +25,7 @@ public class NettyChannel implements TransportChannel {
     public void close() {
        if (isActive()) {
            channel.close().awaitUninterruptibly();
-           logger.info("channel closed for remote address " + channel.remoteAddress());
+           logger.info("Channel closed for remote address " + channel.remoteAddress());
        }
     }
 

@@ -1,5 +1,7 @@
 package com.my.baffinrpc.core.cluster.highavailable;
 
+import com.my.baffinrpc.core.annotation.Extension;
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 import com.my.baffinrpc.core.cluster.Directory;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
@@ -12,6 +14,7 @@ import java.util.List;
 /***
  * 调用失败直接抛出异常
  */
+@ExtensionImpl(name = "failFast",extension = HighAvailableStrategy.class)
 public class FailFastHighAvailable extends AbstractHighAvailableStrategy {
     @Override
     protected <T> Result doInvoke(List<Invoker> invokers, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception {

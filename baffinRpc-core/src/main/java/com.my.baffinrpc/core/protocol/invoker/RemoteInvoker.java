@@ -50,7 +50,7 @@ public class RemoteInvoker extends AbstractInvoker {
                     Class<?> callbackInterface = callbackInfo.getCallbackInterface();
                     URL url = callbackInfo.getCallbackURL();
                     Invoker invoker = proxyFactory.getInvoker(callbackInstance, callbackInterface,url);
-                    FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(new ProtocolImpl());
+                    FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(new ProtocolImpl(url.getPort(),url.getTransport(),url.getMessage()));
                     filterWrapProtocol.addFilter(new ExceptionFilter());
                     Exporter exporter = filterWrapProtocol.export(invoker);
                     if (exporter != null) {
@@ -84,7 +84,6 @@ public class RemoteInvoker extends AbstractInvoker {
 
         }else if (invocation.isAsync())
         {
-            //todo atomic
             RpcContext.getContext().setAsyncCall(true);
             RpcContext.getContext().setFuture(new FutureAdapter(responseFuture));
             return ResultFactory.newVoidResult();

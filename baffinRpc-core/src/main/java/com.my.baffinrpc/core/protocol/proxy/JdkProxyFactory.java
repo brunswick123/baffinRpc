@@ -1,8 +1,6 @@
 package com.my.baffinrpc.core.protocol.proxy;
 
-import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
-import com.my.baffinrpc.core.common.model.Invocation;
-import com.my.baffinrpc.core.common.model.Result;
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 import com.my.baffinrpc.core.common.model.URL;
 import com.my.baffinrpc.core.protocol.invoker.Invoker;
 import com.my.baffinrpc.core.protocol.invoker.WrapInvoker;
@@ -11,8 +9,10 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+@ExtensionImpl(name = "jdk",extension = ProxyFactory.class)
 public class JdkProxyFactory extends AbstractProxyFactory {
     @Override
+    @SuppressWarnings("unchecked") //代理生成的一定是T类型
     public <T> T getProxy(final Invoker invoker) {
         InvocationHandler invocationHandler = new InvocationHandler() {
             @Override

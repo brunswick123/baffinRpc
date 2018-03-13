@@ -21,10 +21,11 @@ public class FilterWrapProtocol implements Protocol {
         this.wrappedProtocol = wrappedProtocol;
     }
 
-    public void addFilter(Filter filter)
+    public Protocol addFilter(Filter filter)
     {
         if (filter != null)
             filters.add(filter);
+        return this;
     }
 
     @Override

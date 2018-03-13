@@ -1,5 +1,6 @@
 package com.my.baffinrpc.core.cluster.highavailable;
 
+import com.my.baffinrpc.core.annotation.Extension;
 import com.my.baffinrpc.core.cluster.Directory;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.common.model.Invocation;
@@ -11,6 +12,7 @@ import java.util.List;
 /***
  * 高可用策略
  */
+@Extension
 public interface HighAvailableStrategy {
 
     /***

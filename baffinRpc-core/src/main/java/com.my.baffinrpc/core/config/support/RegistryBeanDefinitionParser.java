@@ -1,9 +1,13 @@
 package com.my.baffinrpc.core.config.support;
 
+import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.exception.RPCConfigException;
 import com.my.baffinrpc.core.config.RegistryConfig;
 import com.my.baffinrpc.core.registry.RegistryService;
 import com.my.baffinrpc.core.registry.zookeeper.ZkRegistryService;
+import com.my.baffinrpc.core.registry.zookeeper.zookeeperClient.ZookeeperClient;
+import com.my.baffinrpc.core.registry.zookeeper.zookeeperClient.ZookeeperClientFactory;
+import com.my.baffinrpc.core.spi.ExtensionLoader;
 import com.my.baffinrpc.core.util.StringUtil;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -25,20 +29,26 @@ public class RegistryBeanDefinitionParser implements BeanDefinitionParser {
         if (type.equals(TYPE_ZOOKEEPER))
         {
             String address = element.getAttribute("address");
-            if (address != null && address.trim().length() > 0)
+            if (!StringUtil.isEmptyOrNull(address))
             {
-                RegistryService registryService = new ZkRegistryService(address);
+                String zookeeperClient = element.getAttribute("zookeeperClient");
+                if (StringUtil.isEmptyOrNull(zookeeperClient))
+                    zookeeperClient = DefaultConfig.ZOOKEEPER_CLIENT;
+                ZookeeperClientFactory zookeeperClientFactory = ExtensionLoader.getExtension(ZookeeperClientFactory.class,zookeeperClient);
+                RegistryService registryService = new ZkRegistryService(address,zookeeperClientFactory);
                 parserContext.getRegistry().registerBeanDefinition(StringUtil.convertFirstLetterToLowerCase(RegistryConfig.class.getSimpleName()),beanDefinition);
                 beanDefinition.getPropertyValues().addPropertyValue("registryService",registryService);
             }
             else
-                throw new RPCConfigException("invalid address for zookeeper " + address);
+                throw new RPCConfigException("Invalid address for zookeeper " + address);
 
         }
         else if (type.equals(TYPE_DIRECT))
-        {
-            throw new RPCConfigException(" direct registry not supported");
-        }
+            throw new RPCConfigException(" Direct registry not supported");
         return beanDefinition;
     }
+
+
+
+
 }

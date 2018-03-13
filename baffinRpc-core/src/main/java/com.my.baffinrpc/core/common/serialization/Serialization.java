@@ -4,7 +4,7 @@ import com.my.baffinrpc.core.annotation.Extension;
 
 import java.io.IOException;
 
-
+@Extension
 public interface Serialization {
     <T> byte[] serialize(T object) throws IOException;
 

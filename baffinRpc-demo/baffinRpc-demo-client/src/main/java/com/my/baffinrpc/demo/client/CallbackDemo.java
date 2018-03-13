@@ -14,11 +14,6 @@ public class CallbackDemo {
     {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         CallbackService callbackService = applicationContext.getBean("callbackService",CallbackService.class);
-        callbackService.calculateAdd(1, 1, new Notifier() {
-            @Override
-            public void notify(int result, long timeUsed) {
-                System.out.println("callback result is " + result);
-            }
-        });
+        callbackService.calculateAdd(1, 1,new NotifierImpl());
     }
 }

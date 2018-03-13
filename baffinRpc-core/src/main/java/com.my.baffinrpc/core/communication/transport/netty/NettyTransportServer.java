@@ -43,7 +43,7 @@ public class NettyTransportServer extends AbstractTransportServer {
             }
         }).option(ChannelOption.SO_BACKLOG, 128)
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
-        logger.info("netty server init successfully");
+        logger.info("Netty server init successfully");
     }
 
     protected void shutdownGracefully() {
@@ -61,11 +61,12 @@ public class NettyTransportServer extends AbstractTransportServer {
             }
         });
         channelFuture.awaitUninterruptibly();
-        if (channelFuture.isSuccess())
+        if (channelFuture.isSuccess()) {
+            logger.info("Open Netty server successfully with port " + port);
             return true;
+        }
         else {
-            logger.error("bind server to [" + host + ":" + port + "] failed due to " +  channelFuture.cause().getMessage());
-            logger.error(channelFuture.cause().getMessage());
+            logger.error("Bind server to [" + host + ":" + port + "] failed due to " +  channelFuture.cause().getMessage());
             return false;
         }
     }

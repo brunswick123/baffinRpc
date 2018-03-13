@@ -1,10 +1,12 @@
 package com.my.baffinrpc.core.cluster.loadbalance;
 
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 import com.my.baffinrpc.core.protocol.invoker.Invoker;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@ExtensionImpl(name = "roundRobin", extension = LoadBalanceStrategy.class)
 public class RoundRobinLoadBalance extends AbstractLoadBalanceStrategy {
 
     private final AtomicInteger index = new AtomicInteger(0);

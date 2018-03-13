@@ -23,14 +23,12 @@ public abstract class AbstractTransportServer implements TransportServer {
     @Override
     public boolean bind(){
         int attemptCount = 0;
-        while ( attemptCount < MAX_BIND_ATTEMPT_TIME)
+        while (attemptCount < MAX_BIND_ATTEMPT_TIME)
         {
             if (doBind())
                 return true;
             else
-            {
                 attemptCount++;
-            }
         }
         shutdownGracefully();
         return false;

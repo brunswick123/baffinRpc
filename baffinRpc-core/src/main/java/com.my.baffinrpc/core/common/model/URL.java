@@ -1,8 +1,9 @@
 package com.my.baffinrpc.core.common.model;
 
+import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
 import com.my.baffinrpc.core.config.MethodConfig;
-import com.my.baffinrpc.core.util.URLUtil;
+import com.my.baffinrpc.core.util.NetworkUtil;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -16,6 +17,16 @@ public class URL implements Serializable{
     private final int port;
     private final Map<String,String> parameters;
     private transient String urlStringCache = null;
+
+    public static final transient String IS_CALLBACK_METHOD = "isCallbackMethod";
+    public static final transient String CALLBACK_ARG_INDEX = "callbackArgIndex";
+    public static final transient String CALLBACK_ARG_INTERFACE = "callbackArgInterface";
+    public static final transient String CALLBACK_PORT = "callbackPort";
+    public static final transient String IS_ASYNC = "isAsync";
+    public static final transient String PROTOCOL = "protocol";
+    public static final transient String TRANSPORT = "transport";
+    public static final transient String MESSAGE = "message";
+    public static final transient String SERIALIZATION = "serialization";
 
 
     private URL(String interfaceName, String host, int port, Map<String,String> parameters) {
@@ -39,11 +50,6 @@ public class URL implements Serializable{
     }
 
 
-    public Map<String, String> getParameters() {
-        return parameters;
-    }
-
-
     public String buildString()
     {
         if (urlStringCache == null) {
@@ -64,21 +70,22 @@ public class URL implements Serializable{
         //rpc://127.0.0.1:9999/com.my.baffinrpc.test.HelloService?hi.isAsync=true&hello.hasCallback=true&hello.callbackArgIndex=1
     }
 
-    public static URL buildURL(String interfaceName, String host, int port, String transportType, String serializeTypeName, List<MethodConfig> methodConfigs)
+    public static URL buildURL(String interfaceName, String host, int port, String transport, String serializeTypeName, String message, List<MethodConfig> methodConfigs)
     {
         Map<String,String> parameters = new HashMap<>();
-        parameters.put(URLUtil.SERIALIZATION,serializeTypeName.toLowerCase());
-        parameters.put(URLUtil.TRANSPORT,transportType);
+        parameters.put(SERIALIZATION,serializeTypeName.toLowerCase());
+        parameters.put(TRANSPORT,transport);
+        parameters.put(MESSAGE,message);
         if (methodConfigs != null && methodConfigs.size() > 0) {
             for (MethodConfig methodConfig : methodConfigs) {
                 String methodName = methodConfig.getMethodName();
                 if (methodConfig.isAsync())
-                    parameters.put(methodName + "." + URLUtil.IS_ASYNC, String.valueOf(methodConfig.isAsync()));
+                    parameters.put(methodName + "." + IS_ASYNC, String.valueOf(methodConfig.isAsync()));
                 if (methodConfig.isCallback()) {
-                    parameters.put(methodName + "." + URLUtil.IS_CALLBACK_METHOD, String.valueOf(true));
-                    parameters.put(methodName + "." + URLUtil.CALLBACK_ARG_INDEX, String.valueOf(methodConfig.getCallbackInfo().getMethodArgsIndex()));
-                    parameters.put(methodName + "." + URLUtil.CALLBACK_ARG_INTERFACE, String.valueOf(methodConfig.getCallbackInfo().getCallbackInterface().getName()));
-                    parameters.put(methodName + "." + URLUtil.CALLBACK_PORT, String.valueOf(methodConfig.getCallbackInfo().getCallbackURL().getPort()));
+                    parameters.put(methodName + "." + IS_CALLBACK_METHOD, String.valueOf(true));
+                    parameters.put(methodName + "." + CALLBACK_ARG_INDEX, String.valueOf(methodConfig.getCallbackInfo().getMethodArgsIndex()));
+                    parameters.put(methodName + "." + CALLBACK_ARG_INTERFACE, String.valueOf(methodConfig.getCallbackInfo().getCallbackInterface().getName()));
+                    parameters.put(methodName + "." + CALLBACK_PORT, String.valueOf(methodConfig.getCallbackInfo().getCallbackURL().getPort()));
                 }
             }
         }
@@ -148,6 +155,56 @@ public class URL implements Serializable{
         result = 31 * result + host.hashCode();
         result = 31 * result + port;
         return result;
+    }
+
+
+    public boolean isMethodAsync(String methodName)
+    {
+        if (parameters != null) {
+            String booleanString = parameters.get(methodName + "." + IS_ASYNC);
+            return booleanString != null;
+        }
+        return true;
+    }
+
+
+    /***
+     * 从url中获取方法的callbackInfo
+     * @param methodName 方法名
+     * @return callbackInfo
+     */
+    public CallbackInfo getCallbackInfo(String methodName)
+    {
+        if (parameters != null) {
+            String booleanString = parameters.get(methodName + "." + IS_CALLBACK_METHOD);
+            if (booleanString == null)
+                return null;
+            int callbackIndex = Integer.parseInt(parameters.get(methodName + "." + CALLBACK_ARG_INDEX));
+            String callbackInterfaceName = parameters.get(methodName + "." + CALLBACK_ARG_INTERFACE);
+            int callbackPort = Integer.parseInt(parameters.get(methodName + "." + CALLBACK_PORT));
+            String transport = parameters.get(TRANSPORT);
+            String serialization = parameters.get(SERIALIZATION);
+            String message = parameters.get(MESSAGE);
+            try {
+                Class<?> callbackInterface = Class.forName(callbackInterfaceName);
+                URL callbackURL = URL.buildURL(callbackInterfaceName, NetworkUtil.getLocalHostAddress(),callbackPort,transport,serialization,message,null);
+                return new CallbackInfo(callbackInterface, callbackIndex,callbackURL);
+            } catch (ClassNotFoundException e) {
+                throw new RPCFrameworkException("callback interface with name " + callbackInterfaceName + " not found");
+            }
+        }
+        return null;
+    }
+
+
+    public String getTransport()
+    {
+        return parameters.get(TRANSPORT);
+    }
+
+    public String getMessage()
+    {
+        return parameters.get(MESSAGE);
     }
 
 

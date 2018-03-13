@@ -1,6 +1,5 @@
 package com.my.baffinrpc.core.common.model;
 
-import com.my.baffinrpc.core.util.URLUtil;
 
 import java.io.Serializable;
 
@@ -47,8 +46,8 @@ public class Invocation implements Serializable{
 
     public void setUrl(URL url) {
         this.url = url;
-        this.async = URLUtil.isMethodAsync(url,methodName);
-        CallbackInfo callbackInfo = URLUtil.getCallbackInfo(url,methodName);
+        this.async = url.isMethodAsync(methodName);
+        CallbackInfo callbackInfo = url.getCallbackInfo(methodName);
         if (callbackInfo != null)
             this.callbackInfo = callbackInfo;
     }

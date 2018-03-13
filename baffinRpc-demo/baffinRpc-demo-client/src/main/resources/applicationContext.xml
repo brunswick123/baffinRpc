@@ -5,17 +5,18 @@
        xmlns:rpc="http://www.my.baffinrpc.com/schema" xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.my.baffinrpc.com/schema http://www.my.baffinrpc.com/schema/baffinRpc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <rpc:extensionScan basePackage="com.my.baffinrpc.demo"/>
+
 
     <!--配置zookeeper-->
-    <rpc:registry address="192.168.13.99:2181" type="zookeeper"/>
+    <rpc:registry address="192.168.13.99:2181" type="zookeeper" zookeeperClient="curator"/>
 
     <!--引用服务-->
-    <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService"/>
+    <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService">
+        <rpc:cluster highAvailable="firstAvailable" loadBalance="random"/>
+    </rpc:reference>
     <rpc:reference name="futureService" interface="com.my.baffinrpc.demo.api.FutureService"/>
     <rpc:reference name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService"/>
     <rpc:reference name="exceptionService" interface="com.my.baffinrpc.demo.api.ExceptionService"/>
-
-    <rpc:extensionScan basePackage="com.my.baffinrpc.demo"/>
-
 
 </beans>

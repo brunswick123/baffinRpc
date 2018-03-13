@@ -4,10 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 
 import java.io.IOException;
 
-
+@ExtensionImpl(name = "fastJson",extension = Serialization.class)
 public class FastJsonSerialization implements Serialization{
     public <T> byte[] serialize(T object) throws IOException {
         SerializeWriter writer = new SerializeWriter();

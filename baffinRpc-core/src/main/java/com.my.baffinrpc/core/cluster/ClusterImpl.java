@@ -18,14 +18,14 @@ public class ClusterImpl implements Cluster {
             public Result invoke(Invocation invocation) throws Exception {
                 List<Invoker> invokers = directory.getInvokers();
                 if (invokers == null || invokers.size() == 0)
-                    throw new RPCFrameworkException("no invoker is found for " + getInterface().getName() + "." + invocation.getMethodName());
+                    throw new RPCFrameworkException("No invoker is found for " + getInterface().getName() + "." + invocation.getMethodName());
                 return haStrategy.invoke(invokers,invocation,directory,loadBalanceStrategy);
             }
 
             @Override
             public URL getUrl() {
                 //todo not supported
-                throw new UnsupportedOperationException("getUrl() is not supported for AbstractVirtualInvoker");
+                throw new UnsupportedOperationException("getUrl() is not supported for VirtualInvoker");
             }
 
             @Override

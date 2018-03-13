@@ -1,5 +1,6 @@
 package com.my.baffinrpc.core.cluster.highavailable;
 
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 import com.my.baffinrpc.core.cluster.Directory;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
@@ -9,6 +10,7 @@ import com.my.baffinrpc.core.protocol.invoker.Invoker;
 
 import java.util.List;
 
+@ExtensionImpl(name = "failover",extension = HighAvailableStrategy.class)
 public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
     private static final int allowRetryTime = 3;
     @Override
@@ -16,9 +18,8 @@ public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
         int retryCount = 0;
         while (retryCount <= allowRetryTime)
         {
-            if (retryCount > 1) {
+            if (retryCount > 1)
                 invokers = directory.getInvokers();
-            }
             Invoker invoker = doSelect(invokers, loadBalanceStrategy);
             if (invoker != null)
             {
@@ -34,9 +35,8 @@ public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
             }
             else
             {
-                if (retryCount == allowRetryTime) {
+                if (retryCount == allowRetryTime)
                     throw new RPCFrameworkException("invoker == null for " + invocation.getInterfaceName() + "." + invocation.getMethodName());
-                }
             }
             retryCount++;
         }

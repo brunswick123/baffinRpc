@@ -10,9 +10,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RpcContext {
 
     private volatile Future<?> future;
-    private final AtomicBoolean asyncCall;
+    private volatile boolean asyncCall;
     private String URLString;
 
+    /***
+     * 每个线程独立有一个RpcContext实例
+     */
     private static final ThreadLocal<RpcContext> localRPCContext = new ThreadLocal<RpcContext>() {
         @Override
         protected RpcContext initialValue() {
@@ -23,7 +26,7 @@ public class RpcContext {
 
     private RpcContext() {
         future = null;
-        asyncCall = new AtomicBoolean(false);
+        asyncCall = false;
         URLString = "";
     }
 
@@ -33,7 +36,7 @@ public class RpcContext {
     }
 
     public Future<?> getFuture() {
-        if (!asyncCall.get())
+        if (!asyncCall)
             throw new IllegalStateException("Current rpc is not an async call, future is not available for sync call");
         return future;
     }
@@ -44,7 +47,7 @@ public class RpcContext {
 
 
     public void setAsyncCall(boolean asyncCall) {
-        this.asyncCall.set(true);
+        this.asyncCall = asyncCall;
     }
 
     public String getURLString() {

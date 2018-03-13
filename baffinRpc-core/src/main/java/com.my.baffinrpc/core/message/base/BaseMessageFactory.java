@@ -1,11 +1,13 @@
 package com.my.baffinrpc.core.message.base;
 
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 import com.my.baffinrpc.core.common.model.Invocation;
 import com.my.baffinrpc.core.common.model.Result;
 import com.my.baffinrpc.core.message.*;
 
 import java.util.UUID;
 
+@ExtensionImpl(name = "base",extension = MessageFactory.class)
 public class BaseMessageFactory extends AbstractMessageFactory{
 
     public BaseMessageFactory() {
@@ -14,8 +16,7 @@ public class BaseMessageFactory extends AbstractMessageFactory{
 
     @Override
     public Request newRequest(Invocation invocation) {
-        BaseRequest baseRequest = new BaseRequest(invocation, UUID.randomUUID());
-        return baseRequest;
+        return new BaseRequest(invocation, UUID.randomUUID());
     }
 
     @Override
@@ -25,7 +26,6 @@ public class BaseMessageFactory extends AbstractMessageFactory{
 
     @Override
     public Response newResponse(Result result, Request request) {
-        Response response = new BaseResponse(result,request.getMessageId(),request.getSerializeType());
-        return response;
+        return new BaseResponse(result,request.getMessageId(),request.getSerializeType());
     }
 }

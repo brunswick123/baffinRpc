@@ -15,19 +15,25 @@ public class ExtensionLoader {
     private static HashMap<String,HashMap<String,Class<?>>> extensionImplMap = new HashMap<>();
     private static ConcurrentHashMap<String,Object> cachedInstanceMap = new ConcurrentHashMap<>();
     private static Set<Class<?>> allExtensions = new HashSet<>();
-    public static final String CORE_PATH = "com.my.baffrpc.core";
+    private static final String CORE_PATH = "com.my.baffinrpc.core";
 
-
-    public static void loadAllExtensions()
+    static
     {
+        //获取所有扩展点
         Reflections reflections = new Reflections(CORE_PATH);
         allExtensions = reflections.getTypesAnnotatedWith(Extension.class);
-
+        //获取core下的所有扩展点实现
+        loadExtensionImplFromCore();
     }
 
-    public static void loadAllExtensionImpl(String basePackage)
+    private static void loadExtensionImplFromCore()
     {
-        Reflections reflections = new Reflections(CORE_PATH);
+        loadExtensionImplFromPath(CORE_PATH);
+    }
+
+    public static void loadExtensionImplFromPath(String basePackage)
+    {
+        Reflections reflections = new Reflections(basePackage);
         Set<Class<?>> allExtensionImpl = reflections.getTypesAnnotatedWith(ExtensionImpl.class);
         for (Class<?> clz : allExtensionImpl)
         {
@@ -35,7 +41,7 @@ public class ExtensionLoader {
             String name = extensionImpl.name();
             Class<?> extension = extensionImpl.extension();
             if (!allExtensions.contains(extension))
-                throw new RPCFrameworkException(extension.getName() + " is not a possible extension, cannot be the extension for " + clz.getName());
+                throw new RPCFrameworkException(extension.getName() + " is not a possible extension, and it cannot be the extension for " + clz.getName());
             HashMap<String,Class<?>> extensionImplMapForOneExtension = extensionImplMap.get(extension.getName());
             if (extensionImplMapForOneExtension == null)
             {
@@ -44,16 +50,19 @@ public class ExtensionLoader {
             extensionImplMapForOneExtension.put(name,clz);
             extensionImplMap.put(extension.getName(),extensionImplMapForOneExtension);
         }
-
     }
 
+
+    @SuppressWarnings("unchecked")
     public static <T> T getExtension(Class<?> clz, String extensionImplName)
     {
         String cachedMapKey = clz.getName()+ "." + extensionImplName + ".class";
+        //先从缓存中获取
         Object instance = cachedInstanceMap.get(cachedMapKey);
         if (instance != null)
             return (T)instance;
-        //缓存中不存在,获取类 用newInstance()创建
+        //缓存中不存在,获取Class，再用newInstance()创建
+        //根据extension找到所有的extensionImpl,再由extensionImplName找到class
         HashMap<String,Class<?>> extensionImplMapForOneExtension = extensionImplMap.get(clz.getName());
         if (extensionImplMapForOneExtension!= null)
         {
@@ -61,13 +70,14 @@ public class ExtensionLoader {
             if (extensionImplClz != null)
                 try {
                     Object o = extensionImplClz.newInstance();
+                    //加入缓存
                     cachedInstanceMap.put(cachedMapKey,o);
                     return (T)o;
                 } catch (Exception e) {
                    throw new RPCFrameworkException(e);
                 }
         }
-        throw new RPCFrameworkException("Extension implementation for" + clz.getName() + " with name " + extensionImplName + "is not found");
+        throw new RPCFrameworkException("Extension implementation for extension " + clz.getName() + " with name " + extensionImplName + " is not found");
     }
 
 

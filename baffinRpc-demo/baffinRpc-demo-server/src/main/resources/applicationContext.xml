@@ -5,6 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.my.baffinrpc.com/schema http://www.my.baffinrpc.com/schema/baffinRpc.xsd" >
 
+    <rpc:extensionScan basePackage="com.my.baffinrpc.demo.api.spi" />
+
     <!--配置bean-->
     <bean id="helloService" class="com.my.baffinrpc.demo.server.impl.HelloServiceImpl"/>
     <bean id="futureService" class="com.my.baffinrpc.demo.server.impl.FutureServiceImpl"/>
@@ -12,13 +14,13 @@
     <bean id="exceptionService" class="com.my.baffinrpc.demo.server.impl.ExceptionServiceImpl"/>
 
     <!--配置zookeeper-->
-    <rpc:registry address="192.168.13.99:2181" type="zookeeper"/>
+    <rpc:registry address="192.168.13.99:2181" type="zookeeper" zookeeperClient="zk"/>
 
-    <!--配置helloService服务-->
+    <!--&lt;!&ndash;配置helloService服务&ndash;&gt;
     <rpc:exportService name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" ref="helloService">
-        <!-- 配置服务使用端口-->
-        <rpc:protocol port="9088"/>
-    </rpc:exportService>
+        &lt;!&ndash; 配置服务使用端口&ndash;&gt;
+        <rpc:protocol port="9088" transport="netty" serialization="kryo" proxy="jdk"/>
+    </rpc:exportService>-->
 
     <!--配置futureService服务-->
     <rpc:exportService name="futureService" interface="com.my.baffinrpc.demo.api.FutureService" ref="futureService">
@@ -27,18 +29,18 @@
     </rpc:exportService>
 
 
-    <!--配置callback服务-->
+    <!--&lt;!&ndash;配置callback服务&ndash;&gt;
     <rpc:exportService name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService" ref="callbackService">
-        <rpc:protocol port="9718"/>
-        <!--设置callback所在方法-->
+        <rpc:protocol port="9718" transport="mina"/>
+        &lt;!&ndash;设置callback所在方法&ndash;&gt;
         <rpc:exportMethod name="calculateAdd">
-            <!--配置callback参数-->
+            &lt;!&ndash;配置callback参数&ndash;&gt;
             <rpc:args interface="com.my.baffinrpc.demo.api.Notifier" callback="true"/>
         </rpc:exportMethod>
     </rpc:exportService>
 
-    <!--配置exception服务-->
+    &lt;!&ndash;配置exception服务&ndash;&gt;
     <rpc:exportService name="exceptionService" interface="com.my.baffinrpc.demo.api.ExceptionService" ref="exceptionService">
         <rpc:protocol port="9932"/>
-    </rpc:exportService>
+    </rpc:exportService>-->
 </beans>

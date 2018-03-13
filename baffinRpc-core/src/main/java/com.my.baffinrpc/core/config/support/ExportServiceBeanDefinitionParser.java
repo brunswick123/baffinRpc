@@ -14,6 +14,7 @@ import com.my.baffinrpc.core.filter.ResultSerializableCheckFilter;
 import com.my.baffinrpc.core.protocol.FilterWrapProtocol;
 import com.my.baffinrpc.core.protocol.Protocol;
 import com.my.baffinrpc.core.protocol.ProtocolImpl;
+import com.my.baffinrpc.core.util.NetworkUtil;
 import com.my.baffinrpc.core.util.ReflectUtil;
 import com.my.baffinrpc.core.util.StringUtil;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -50,7 +51,7 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
             ProtocolConfig protocolConfig = parseProtocol(element,interfaceClass);
             builder.addPropertyValue("protocolConfig",protocolConfig);
             //set methodConfig
-            builder.addPropertyValue("methodConfigs",parseMethods(element, interfaceClass,protocolConfig.getProtocol().getPort()));
+            builder.addPropertyValue("methodConfigs",parseMethods(element, interfaceClass,protocolConfig));
             //set registryConfig
             builder.addPropertyReference("registryConfig",StringUtil.convertFirstLetterToLowerCase(RegistryConfig.class.getSimpleName()));
             parserContext.getRegistry().registerBeanDefinition(exportInterfaceName,builder.getBeanDefinition());
@@ -61,50 +62,48 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
         }
     }
 
+
+
     private ProtocolConfig parseProtocol(Element element, Class<?> interfaceClass)
     {
         NodeList nodeList = element.getElementsByTagName("rpc:protocol");
+        ProtocolConfig.Builder builder = new ProtocolConfig.Builder();
         if (nodeList != null && nodeList.getLength() > 0)
         {
             if (nodeList.getLength() > 1)
                 throw new RPCConfigException("more than one protocol config found for " + interfaceClass.getName() + ", only one config is allowed for one service");
             else
             {
-                Protocol protocol = null;
                 Element protocolElement = (Element)nodeList.item(0);
                 String transportName = protocolElement.getAttribute("transport");
-                if (StringUtil.isEmptyOrNull(transportName))
-                    transportName = DefaultConfig.TRANSPORT;
+                if (!StringUtil.isEmptyOrNull(transportName))
+                    builder.transport(transportName);
+                String serialization = protocolElement.getAttribute("serialization");
+                if (!StringUtil.isEmptyOrNull(serialization))
+                    builder.serialization(serialization);
+                String proxy = protocolElement.getAttribute("proxy");
+                if (!StringUtil.isEmptyOrNull(proxy))
+                    builder.proxy(proxy);
                 String portString = protocolElement.getAttribute("port");
                 if (!StringUtil.isEmptyOrNull(portString))
                 {
                     try {
                         int port = Integer.parseInt(portString);
-                        protocol = new ProtocolImpl(port);
+                        builder.port(port);
                     }catch (Exception e)
                     {
-                        throw new RPCFrameworkException(e);
+                        throw new RPCConfigException("parse " + portString + " to port failed due to " + e);
                     }
-                }else
-                    protocol = new ProtocolImpl();
-
-                //todo use protocol interface
-                FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(protocol);
-                filterWrapProtocol.addFilter(new ExceptionFilter());
-                filterWrapProtocol.addFilter(new ResultSerializableCheckFilter());
-                return new ProtocolConfig(filterWrapProtocol);
+                }
+                return builder.build();
             }
         }
         else
-        {
-            FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(new ProtocolImpl());
-            filterWrapProtocol.addFilter(new ExceptionFilter());
-            filterWrapProtocol.addFilter(new ResultSerializableCheckFilter());
-            return new ProtocolConfig(new FilterWrapProtocol(filterWrapProtocol));
-        }
+            return builder.build();
+
     }
 
-    private List<MethodConfig> parseMethods(Element element, Class<?> interfaceClass, int protocolPort)
+    private List<MethodConfig> parseMethods(Element element, Class<?> interfaceClass, ProtocolConfig protocolConfig)
     {
         List<MethodConfig> methodConfigList = new ArrayList<>();
         NodeList nodeList = element.getElementsByTagName("rpc:exportMethod");
@@ -147,8 +146,10 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                         if (callbackPortString != null && !"".equals(callbackPortString.trim()))
                             callbackPort = Integer.parseInt(callbackPortString);
                         else
-                            callbackPort = protocolPort + 10;
-                        URL callbackURL = URL.buildURL(callbackInterface.getName(),"127.0.0.1",callbackPort,"netty","jdk",null);
+                            callbackPort = protocolConfig.getPort() + 10;
+                        //callback rpc use the same transport serialize and message with the rpc that invoke callback
+                        URL callbackURL = URL.buildURL(callbackInterface.getName(), NetworkUtil.getLocalHostAddress(),callbackPort,
+                                protocolConfig.getTransport(),protocolConfig.getSerialization(),protocolConfig.getMessage(),null);
                         CallbackInfo callbackInfo = new CallbackInfo(callbackInterface,callbackParameterIndex,callbackURL);
                         methodConfig.setCallback(true);
                         methodConfig.setCallbackInfo(callbackInfo);

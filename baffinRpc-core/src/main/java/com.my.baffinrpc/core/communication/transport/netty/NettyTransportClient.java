@@ -3,6 +3,7 @@ package com.my.baffinrpc.core.communication.transport.netty;
 import com.my.baffinrpc.core.communication.ChannelHandler;
 import com.my.baffinrpc.core.communication.transport.AbstractTransportClient;
 import com.my.baffinrpc.core.communication.transport.TransportChannel;
+import com.my.baffinrpc.core.communication.transport.mina.MinaTransportClient;
 import com.my.baffinrpc.core.message.Codec;
 import com.my.baffinrpc.core.message.Message;
 import com.my.baffinrpc.core.message.Response;
@@ -20,6 +21,7 @@ public class NettyTransportClient extends AbstractTransportClient {
 
     private Bootstrap bootstrap;
     private EventLoopGroup workGroup;
+    private static final Logger logger = Logger.getLogger(NettyTransportClient.class);
 
     public NettyTransportClient(String host, int port, ChannelHandler<Response> clientTransportChannelHandler, Codec<Message> codec) {
         super(host, port, clientTransportChannelHandler,codec);
@@ -34,6 +36,7 @@ public class NettyTransportClient extends AbstractTransportClient {
 
     @Override
     protected TransportChannel doConnect() {
+        logger.info("connect server using netty transport");
         ChannelFuture channelFuture = bootstrap.connect(host,port).awaitUninterruptibly();
         if (channelFuture.isSuccess()) {
             return new NettyChannel(channelFuture.channel());

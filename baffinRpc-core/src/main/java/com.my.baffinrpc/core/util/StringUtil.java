@@ -3,10 +3,6 @@ package com.my.baffinrpc.core.util;
 import java.io.UnsupportedEncodingException;
 
 public class StringUtil {
-    public static String getUri(String serviceName, String methodName)
-    {
-        return serviceName + "." + methodName;
-    }
 
     public static String convertFirstLetterToLowerCase(String original)
     {

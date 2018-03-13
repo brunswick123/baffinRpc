@@ -10,7 +10,6 @@ public class BaseRequest extends AbstractMessage implements Request {
 
     private final Invocation invocation;
 
-
     public BaseRequest(Invocation invocation, UUID messageId) {
         super(messageId, invocation.getSerializationType(), false);
         this.invocation = invocation;
@@ -21,7 +20,6 @@ public class BaseRequest extends AbstractMessage implements Request {
         super(null,serializationType,true);
         this.invocation = null;
     }
-
 
     @Override
     public Invocation getInvocation() {

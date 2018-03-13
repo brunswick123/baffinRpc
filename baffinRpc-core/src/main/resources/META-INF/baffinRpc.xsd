@@ -16,6 +16,7 @@
                         <xsd:attribute name="port" type="xsd:string" use="optional"/>
                         <xsd:attribute name="transport" type="xsd:string" use="optional"/>
                         <xsd:attribute name="serialization" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="proxy" type="xsd:string" use="optional"/>
                     </xsd:complexType>
                 </xsd:element>
                 <xsd:element name="exportMethod" maxOccurs="unbounded" minOccurs="0">
@@ -67,6 +68,7 @@
                             </xsd:restriction>
                         </xsd:simpleType>
                     </xsd:attribute>
+                    <xsd:attribute name="zookeeperClient" type="xsd:string" use="optional"/>
                     <!--<xsd:sequence>
                         <xsd:element minOccurs="1" maxOccurs="unbounded" ref="serviceAddress"/>
                     </xsd:sequence>-->
@@ -87,12 +89,16 @@
             <xsd:documentation>refer service in client side</xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="name" type="xsd:string" use="required"/>
-                    <xsd:attribute name="interface" type="xsd:string" use="required"/>
-                </xsd:extension>
-            </xsd:complexContent>
+            <xsd:sequence>
+                <xsd:element name="cluster" minOccurs="0" maxOccurs="1">
+                    <xsd:complexType>
+                        <xsd:attribute name="highAvailable" type="xsd:string" use="optional"/>
+                        <xsd:attribute name="loadBalance" type="xsd:string" use="optional"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="name" type="xsd:string" use="required"/>
+            <xsd:attribute name="interface" type="xsd:string" use="required"/>
         </xsd:complexType>
     </xsd:element>
 

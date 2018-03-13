@@ -1,8 +1,10 @@
 package com.my.baffinrpc.core.protocol.proxy;
 
+import com.my.baffinrpc.core.annotation.Extension;
 import com.my.baffinrpc.core.common.model.URL;
 import com.my.baffinrpc.core.protocol.invoker.Invoker;
 
+@Extension
 public interface ProxyFactory {
 
     /***

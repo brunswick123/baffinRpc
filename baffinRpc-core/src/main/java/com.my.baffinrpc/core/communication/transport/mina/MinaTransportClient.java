@@ -26,6 +26,7 @@ public class MinaTransportClient extends AbstractTransportClient {
 
     @Override
     protected TransportChannel doConnect() {
+        logger.info("connect server using mina transport");
         ConnectFuture future = connector.connect(new InetSocketAddress(host,port));
         future.awaitUninterruptibly();
         if (future.isConnected()) {

@@ -71,39 +71,6 @@ public abstract class AbstractTransportClient implements TransportClient {
         }
     }
 
-    /*@Override
-    public void connect() throws InterruptedException {
-        if (transportChannel == null || !transportChannel.isActive()) {
-            init(channelHandler, codec);
-            int attemptCount = 0;
-            boolean connectSuccessFlag = false;
-            while (attemptCount < initialConnectRetryTime) {
-                TransportChannel temp = doConnect();
-                if (temp != null) {
-                    transportChannel = temp;
-                    transportChannel.setCloseChannelListener(new ChannelFutureListener() {
-                        @Override
-                        public void operationComplete() {
-                            shutdownGracefully();
-                        }
-                    });
-                    connectSuccessFlag = true;
-                    logger.info("connect to [" + host + ":" + port + "] successfully");
-                    break;
-                } else {
-                    attemptCount++;
-                    logger.error("try to connect to [" + host + ":" + port + "] failed for " +
-                            attemptCount + " attempt, try to reconnect...");
-                    Thread.sleep(attemptCount * 1000);
-                }
-            }
-            if (!connectSuccessFlag) {
-                shutdownGracefully();
-                throw new RPCNetworkException("connect to [" + host + ":" + port + "] failed");
-            }
-        }
-    }*/
-
     protected abstract void shutdownGracefully();
 
     protected abstract TransportChannel doConnect();

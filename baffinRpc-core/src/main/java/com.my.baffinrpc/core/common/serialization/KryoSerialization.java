@@ -3,11 +3,13 @@ package com.my.baffinrpc.core.common.serialization;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.my.baffinrpc.core.annotation.ExtensionImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+@ExtensionImpl(name = "kryo",extension = Serialization.class)
 public class KryoSerialization implements Serialization {
 
     private Kryo kryo = new Kryo();

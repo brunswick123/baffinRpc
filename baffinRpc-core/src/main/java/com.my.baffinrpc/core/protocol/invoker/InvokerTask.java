@@ -8,7 +8,6 @@ import com.my.baffinrpc.core.common.model.ResultFactory;
 import com.my.baffinrpc.core.communication.Channel;
 import com.my.baffinrpc.core.message.MessageFactory;
 import com.my.baffinrpc.core.message.Request;
-import com.my.baffinrpc.core.util.URLUtil;
 
 public class InvokerTask implements Runnable {
 
