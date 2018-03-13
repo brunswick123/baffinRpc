@@ -1,10 +1,13 @@
 package com.my.baffinrpc.core.config.support;
 
+import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.exception.RPCConfigException;
 import com.my.baffinrpc.core.config.ClusterConfig;
 import com.my.baffinrpc.core.config.ProtocolConfig;
 import com.my.baffinrpc.core.config.ReferenceConfig;
 import com.my.baffinrpc.core.config.RegistryConfig;
+import com.my.baffinrpc.core.protocol.proxy.ProxyFactory;
+import com.my.baffinrpc.core.spi.ExtensionLoader;
 import com.my.baffinrpc.core.util.StringUtil;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -30,6 +33,13 @@ public class ReferenceBeanDefinitionParser implements BeanDefinitionParser {
         String beanName = StringUtil.convertFirstLetterToLowerCase(interfaceClz.getSimpleName());
         parserContext.getRegistry().registerBeanDefinition(beanName,builder.getBeanDefinition());
         builder.addPropertyValue("interfaceClz",interfaceClz);
+        //parse proxy
+        String proxy = element.getAttribute("proxy");
+        if (StringUtil.isEmptyOrNull(proxy)) {
+            proxy = DefaultConfig.PROXY;
+        }
+        ProxyFactory proxyFactory = ExtensionLoader.getExtension(ProxyFactory.class,proxy);
+        builder.addPropertyValue("proxyFactory",proxyFactory);
         builder.addPropertyValue("clusterConfig",parseClusterConfig(element,interfaceClzName));
         builder.addPropertyReference("registryConfig",StringUtil.convertFirstLetterToLowerCase(RegistryConfig.class.getSimpleName()));
         return builder.getBeanDefinition();

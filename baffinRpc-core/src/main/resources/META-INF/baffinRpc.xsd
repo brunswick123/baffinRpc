@@ -99,6 +99,7 @@
             </xsd:sequence>
             <xsd:attribute name="name" type="xsd:string" use="required"/>
             <xsd:attribute name="interface" type="xsd:string" use="required"/>
+            <xsd:attribute name="proxy" type="xsd:string" use="optional"/>
         </xsd:complexType>
     </xsd:element>
 

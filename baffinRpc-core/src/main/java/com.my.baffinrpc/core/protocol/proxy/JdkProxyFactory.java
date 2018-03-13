@@ -9,6 +9,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+/***
+ * jdk自带方式实现动态代理
+ */
 @ExtensionImpl(name = "jdk",extension = ProxyFactory.class)
 public class JdkProxyFactory extends AbstractProxyFactory {
     @Override

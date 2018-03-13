@@ -71,7 +71,7 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
         if (nodeList != null && nodeList.getLength() > 0)
         {
             if (nodeList.getLength() > 1)
-                throw new RPCConfigException("more than one protocol config found for " + interfaceClass.getName() + ", only one config is allowed for one service");
+                throw new RPCConfigException("More than one protocol config found for " + interfaceClass.getName() + ", only one config is allowed for one service");
             else
             {
                 Element protocolElement = (Element)nodeList.item(0);
@@ -95,11 +95,9 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                         throw new RPCConfigException("parse " + portString + " to port failed due to " + e);
                     }
                 }
-                return builder.build();
             }
         }
-        else
-            return builder.build();
+        return builder.build();
 
     }
 

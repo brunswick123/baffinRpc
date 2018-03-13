@@ -27,6 +27,8 @@ public class URL implements Serializable{
     public static final transient String TRANSPORT = "transport";
     public static final transient String MESSAGE = "message";
     public static final transient String SERIALIZATION = "serialization";
+    private static final transient String PROXY = "proxy";
+
 
 
     private URL(String interfaceName, String host, int port, Map<String,String> parameters) {
@@ -205,6 +207,11 @@ public class URL implements Serializable{
     public String getMessage()
     {
         return parameters.get(MESSAGE);
+    }
+
+    public String getProxy()
+    {
+        return parameters.get(PROXY);
     }
 
 

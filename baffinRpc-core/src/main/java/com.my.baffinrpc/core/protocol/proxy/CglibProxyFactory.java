@@ -8,6 +8,9 @@ import net.sf.cglib.proxy.MethodProxy;
 
 import java.lang.reflect.Method;
 
+/***
+ * cglib实现动态代理
+ */
 @ExtensionImpl(name = "cglib",extension = ProxyFactory.class)
 public class CglibProxyFactory extends AbstractProxyFactory{
     @Override

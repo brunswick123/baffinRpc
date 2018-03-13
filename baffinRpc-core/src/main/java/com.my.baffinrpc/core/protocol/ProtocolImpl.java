@@ -71,7 +71,7 @@ public class ProtocolImpl extends AbstractProtocol {
             return new ExporterImpl(invoker);
         }
         else
-            throw new RPCFrameworkException("start server with port " + invoker.getUrl().getPort() + " failed");
+            throw new RPCFrameworkException("Start server with port " + invoker.getUrl().getPort() + " failed");
     }
 
     @Override

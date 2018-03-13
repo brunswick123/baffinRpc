@@ -12,7 +12,7 @@
     <rpc:registry address="192.168.13.99:2181" type="zookeeper" zookeeperClient="curator"/>
 
     <!--引用服务-->
-    <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService">
+    <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" proxy="javaassist">
         <rpc:cluster highAvailable="firstAvailable" loadBalance="random"/>
     </rpc:reference>
     <rpc:reference name="futureService" interface="com.my.baffinrpc.demo.api.FutureService"/>

@@ -9,13 +9,16 @@ import javassist.util.proxy.ProxyObject;
 
 import java.lang.reflect.Method;
 
+/***
+ * javaassist实现动态代理
+ */
 @ExtensionImpl(name = "javaassist",extension = ProxyFactory.class)
 public class JavaassistProxyFactory extends AbstractProxyFactory{
     @Override
     public <T> T getProxy(final Invoker invoker) {
         try {
             javassist.util.proxy.ProxyFactory proxyFactory = new javassist.util.proxy.ProxyFactory();
-            proxyFactory.setSuperclass(invoker.getInterface());
+            proxyFactory.setInterfaces(new Class[]{invoker.getInterface()});
             Class<T> clz = proxyFactory.createClass();
             final T newInstance = clz.newInstance();
             MethodHandler methodHandler = new MethodHandler() {

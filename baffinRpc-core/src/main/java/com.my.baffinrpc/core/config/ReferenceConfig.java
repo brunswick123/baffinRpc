@@ -5,6 +5,7 @@ import com.my.baffinrpc.core.cluster.highavailable.FirstAvailableHighAvailable;
 import com.my.baffinrpc.core.cluster.highavailable.HighAvailableStrategy;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.cluster.loadbalance.RoundRobinLoadBalance;
+import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.model.URL;
 import com.my.baffinrpc.core.filter.ArgsSerializableCheckFilter;
 import com.my.baffinrpc.core.protocol.FilterWrapProtocol;
@@ -22,7 +23,8 @@ import java.util.List;
 
 public class ReferenceConfig<T> implements FactoryBean<T> {
     private Class<T> interfaceClz;
-    private ProxyFactory proxyFactory = new CglibProxyFactory();
+    //用默认proxy生成对virtualInvoker的动态代理
+    private ProxyFactory proxyFactory;
     private RegistryConfig registryConfig;
     private Cluster cluster = new ClusterImpl();
     private volatile Invoker invoker;
@@ -80,6 +82,14 @@ public class ReferenceConfig<T> implements FactoryBean<T> {
 
     public void setClusterConfig(ClusterConfig clusterConfig) {
         this.clusterConfig = clusterConfig;
+    }
+
+    public ProxyFactory getProxyFactory() {
+        return proxyFactory;
+    }
+
+    public void setProxyFactory(ProxyFactory proxyFactory) {
+        this.proxyFactory = proxyFactory;
     }
 
     private void registerShutdownHook()
