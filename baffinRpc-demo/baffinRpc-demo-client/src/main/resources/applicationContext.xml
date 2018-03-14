@@ -13,7 +13,7 @@
 
     <!--引用服务-->
     <rpc:reference name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" proxy="javaassist">
-        <rpc:cluster highAvailable="firstAvailable" loadBalance="random"/>
+        <rpc:cluster highAvailable="failback" loadBalance="random"/>
     </rpc:reference>
     <rpc:reference name="futureService" interface="com.my.baffinrpc.demo.api.FutureService"/>
     <rpc:reference name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService"/>

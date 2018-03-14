@@ -100,6 +100,3 @@ baffinRpc 采用SPI机制实现程序的可扩展性,对于程序中的任意扩
 * com.my.baffinrpc.core.common.serialization.Serialization
 * com.my.baffinrpc.core.message.MessageFactory
 * com.my.baffinrpc.core.registry.zookeeper.zookeeperClient.ZookeeperClientFactory
-
-
-

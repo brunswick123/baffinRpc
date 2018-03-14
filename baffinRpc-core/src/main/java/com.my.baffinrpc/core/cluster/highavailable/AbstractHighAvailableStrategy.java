@@ -10,12 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractHighAvailableStrategy implements HighAvailableStrategy {
-    @Override
-    public <T> Result invoke(List<Invoker> invokers, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception {
-        return doInvoke(invokers,invocation,directory,loadBalanceStrategy);
-    }
-
-    protected abstract <T> Result doInvoke(List<Invoker> invokers, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception;
 
     protected List<Invoker> getAvailableInvokers(List<Invoker> invokers)
     {

@@ -15,6 +15,6 @@ public class HelloDemo {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         HelloService helloService = applicationContext.getBean("helloService",HelloService.class);
         System.out.println("result is " + helloService.hello("world",123));
-        System.out.println("result is " + helloService.hiPerson(new Person("world",new LocationAddress(0,"solar"))));
+       // System.out.println("result is " + helloService.hiPerson(new Person("world",new LocationAddress(0,"solar"))));
     }
 }

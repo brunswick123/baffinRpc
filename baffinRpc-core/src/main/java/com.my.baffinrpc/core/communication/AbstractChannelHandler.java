@@ -8,7 +8,7 @@ public abstract class AbstractChannelHandler<T> implements ChannelHandler<T> {
 
     @Override
     public void exceptionCaught(Channel channel, Throwable cause) throws Exception {
-        logger.error("channel exception occurred " + cause + ",try to channelClosed channel",cause);
+        logger.error("Channel exception occurred " + cause + ",try to channelClosed channel",cause);
         channel.close();
     }
 

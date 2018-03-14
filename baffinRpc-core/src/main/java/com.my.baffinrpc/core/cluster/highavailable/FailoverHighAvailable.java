@@ -1,6 +1,7 @@
 package com.my.baffinrpc.core.cluster.highavailable;
 
 import com.my.baffinrpc.core.annotation.ExtensionImpl;
+import com.my.baffinrpc.core.cluster.ClusterInvoker;
 import com.my.baffinrpc.core.cluster.Directory;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
@@ -10,16 +11,19 @@ import com.my.baffinrpc.core.protocol.invoker.Invoker;
 
 import java.util.List;
 
+/***
+ * 调用失败后进行重试一定次数
+ */
 @ExtensionImpl(name = "failover",extension = HighAvailableStrategy.class)
 public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
     private static final int allowRetryTime = 3;
     @Override
-    protected <T> Result doInvoke(List<Invoker> invokers, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception {
+    public <T> Result invoke(List<Invoker> invokers, ClusterInvoker clusterInvoker, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception {
         int retryCount = 0;
         while (retryCount <= allowRetryTime)
         {
             if (retryCount > 1)
-                invokers = directory.getInvokers();
+                invokers = directory.getInvokers(); //重新获取下全部的invoker
             Invoker invoker = doSelect(invokers, loadBalanceStrategy);
             if (invoker != null)
             {

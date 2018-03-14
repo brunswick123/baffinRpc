@@ -1,6 +1,7 @@
 package com.my.baffinrpc.core.cluster.highavailable;
 
 import com.my.baffinrpc.core.annotation.Extension;
+import com.my.baffinrpc.core.cluster.ClusterInvoker;
 import com.my.baffinrpc.core.cluster.Directory;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.common.model.Invocation;
@@ -18,6 +19,7 @@ public interface HighAvailableStrategy {
     /***
      * 实现高可用地调用
      * @param invokers
+     * @param clusterInvoker
      * @param invocation
      * @param directory
      * @param loadBalanceStrategy
@@ -25,6 +27,6 @@ public interface HighAvailableStrategy {
      * @return
      * @throws Exception
      */
-    <T> Result invoke(List<Invoker> invokers, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception;
+    <T> Result invoke(List<Invoker> invokers, ClusterInvoker clusterInvoker, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception;
 }
 

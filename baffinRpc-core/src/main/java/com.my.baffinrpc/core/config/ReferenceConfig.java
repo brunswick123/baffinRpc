@@ -26,7 +26,6 @@ public class ReferenceConfig<T> implements FactoryBean<T> {
     //用默认proxy生成对virtualInvoker的动态代理
     private ProxyFactory proxyFactory;
     private RegistryConfig registryConfig;
-    private Cluster cluster = new ClusterImpl();
     private volatile Invoker invoker;
     private static final Logger logger = Logger.getLogger(ReferenceConfig.class);
     private ClusterConfig clusterConfig;
@@ -45,7 +44,7 @@ public class ReferenceConfig<T> implements FactoryBean<T> {
         registryService.subscribe(interfaceClz.getName(),directory);
         HighAvailableStrategy highAvailableStrategy = ExtensionLoader.getExtension(HighAvailableStrategy.class,clusterConfig.getHighAvailableStrategy());
         LoadBalanceStrategy loadBalanceStrategy = ExtensionLoader.getExtension(LoadBalanceStrategy.class,clusterConfig.getLoadBalanceStrategy());
-        invoker = cluster.createVirtualInvoker(directory,highAvailableStrategy,loadBalanceStrategy);
+        invoker = new ClusterInvoker(directory,highAvailableStrategy,loadBalanceStrategy);
         registerShutdownHook();
         return proxyFactory.getProxy(invoker);
     }

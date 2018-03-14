@@ -122,7 +122,7 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
             }
             NodeList argsList = element.getElementsByTagName("rpc:args");
             if (argsList.getLength() > 1)
-                throw new RPCConfigException("multiple args config not supported");
+                throw new RPCConfigException("Multiple args config not supported");
             for (int j = 0; j < argsList.getLength(); j++)
             {
                 Element args = (Element)argsList.item(j);
@@ -145,7 +145,7 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                             callbackPort = Integer.parseInt(callbackPortString);
                         else
                             callbackPort = protocolConfig.getPort() + 10;
-                        //callback rpc use the same transport serialize and message with the rpc that invoke callback
+                        //callback rpc use the same transport, serialize and message with the rpc that invoke callback
                         URL callbackURL = URL.buildURL(callbackInterface.getName(), NetworkUtil.getLocalHostAddress(),callbackPort,
                                 protocolConfig.getTransport(),protocolConfig.getSerialization(),protocolConfig.getMessage(),null);
                         CallbackInfo callbackInfo = new CallbackInfo(callbackInterface,callbackParameterIndex,callbackURL);
