@@ -76,7 +76,7 @@ public class ProtocolImpl extends AbstractProtocol {
 
     @Override
     public Invoker refer(URL url, Class<?> interfaceClz) {
-        return new RemoteInvoker(url, interfaceClz,transportFactory);
+        return new RemoteInvoker(url, interfaceClz,transportFactory,messageFactory);
     }
 
     @Override
@@ -94,7 +94,6 @@ public class ProtocolImpl extends AbstractProtocol {
 
     class ExchangeServerChannelHandler extends AbstractChannelHandler<Request>
     {
-        private ProxyFactory proxyFactory = new CglibProxyFactory();
         private final ConcurrentHashMap<URL, Invoker> callbackInvokerMap = new ConcurrentHashMap<>();
         private final ExecutorService threadPool = threadPoolFactory.newThreadPool(DefaultConfig.MAX_POOL_SIZE,DefaultConfig.MAX_POOL_SIZE,
                 new NamedThreadFactory("biz"));
@@ -127,6 +126,7 @@ public class ProtocolImpl extends AbstractProtocol {
             CallbackInfo callbackInfo = invocation.getCallbackInfo();
             URL callbackUrl = callbackInfo.getCallbackURL();
             Invoker callbackInvoker = getCallbackInvoker(callbackUrl, callbackInfo);
+            ProxyFactory proxyFactory = ExtensionLoader.getExtension(ProxyFactory.class,DefaultConfig.PROXY);
             invocation.getArgs()[callbackInfo.getMethodArgsIndex()] = proxyFactory.getProxy(callbackInvoker);
         }
 

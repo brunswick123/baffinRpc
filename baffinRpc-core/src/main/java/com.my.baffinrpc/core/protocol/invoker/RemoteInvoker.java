@@ -2,6 +2,7 @@ package com.my.baffinrpc.core.protocol.invoker;
 
 
 import com.my.baffinrpc.core.common.RpcContext;
+import com.my.baffinrpc.core.common.constant.DefaultConfig;
 import com.my.baffinrpc.core.common.future.FutureAdapter;
 import com.my.baffinrpc.core.common.future.ResponseFuture;
 import com.my.baffinrpc.core.common.model.*;
@@ -19,6 +20,7 @@ import com.my.baffinrpc.core.protocol.ProtocolImpl;
 import com.my.baffinrpc.core.protocol.export.Exporter;
 import com.my.baffinrpc.core.protocol.proxy.CglibProxyFactory;
 import com.my.baffinrpc.core.protocol.proxy.ProxyFactory;
+import com.my.baffinrpc.core.spi.ExtensionLoader;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,17 +29,17 @@ public class RemoteInvoker extends AbstractInvoker {
 
     private final ExchangeClient exchangeClient;
 
-    private ProxyFactory proxyFactory = new CglibProxyFactory();
-    private MessageFactory messageFactory = new BaseMessageFactory();
-
+    private ProxyFactory proxyFactory = ExtensionLoader.getExtension(ProxyFactory.class, DefaultConfig.PROXY);
+    private final MessageFactory messageFactory;
     private final ConcurrentHashMap<URL,Exporter> exportCallbackMap = new ConcurrentHashMap<>();
     private static final Logger logger = Logger.getLogger(RemoteInvoker.class);
 
 
-    public RemoteInvoker(URL url, Class<?> interfaceClz,TransportFactory transportFactory) {
+    public RemoteInvoker(URL url, Class<?> interfaceClz,TransportFactory transportFactory, MessageFactory messageFactory) {
         super(url,interfaceClz);
+        this.messageFactory = messageFactory;
         exchangeClient = new ExchangeClientImpl(transportFactory.newTransportClient(url.getHost(),url.getPort(),
-                (new ExchangeClientChannelHandler()),new BaseMessageCodec()));
+                (new ExchangeClientChannelHandler()),this.messageFactory.getMessageCodec()));
     }
 
     private void exportCallbackExporter(CallbackInfo callbackInfo,Invocation invocation)
@@ -79,6 +81,7 @@ public class RemoteInvoker extends AbstractInvoker {
         ResponseFuture<Result> responseFuture = exchangeClient.request(request);
         if (invocation.isOneWay())
         {
+            RpcContext.getContext().setAsyncCall(false);
             RpcContext.getContext().setFuture(null);
             return ResultFactory.newVoidResult();
 
@@ -104,6 +107,7 @@ public class RemoteInvoker extends AbstractInvoker {
     public void destroy() {
         exchangeClient.close();
     }
+
 
 
 }

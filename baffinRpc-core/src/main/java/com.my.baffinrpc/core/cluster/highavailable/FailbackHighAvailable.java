@@ -29,7 +29,6 @@ public class FailbackHighAvailable extends AbstractHighAvailableStrategy {
     private static final Logger logger = Logger.getLogger(FailbackHighAvailable.class);
 
 
-
     @Override
     public <T> Result invoke(List<Invoker> invokers, ClusterInvoker clusterInvoker, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception {
         Invoker invoker = doSelect(invokers, loadBalanceStrategy);

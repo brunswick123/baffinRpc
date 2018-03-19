@@ -30,12 +30,9 @@ public class ServiceConfig<T> implements InitializingBean{
     private List<MethodConfig> methodConfigs;
     private ProtocolConfig protocolConfig;
     private RegistryConfig registryConfig;
+    private int weight;
     private static final Logger logger = Logger.getLogger(ServiceConfig.class);
 
-    public ServiceConfig()
-    {
-        registerShutdownHook();
-    }
 
     public Class<?> getInterfaceClz() {
         return interfaceClz;
@@ -81,21 +78,22 @@ public class ServiceConfig<T> implements InitializingBean{
         this.registryConfig = registryConfig;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     @Override
     public void afterPropertiesSet() throws Exception {
-        Protocol protocol = null;
-        if (protocolConfig.getPort() != PROTOCOL_PORT_PLACE_HOLDER)
-            protocol = new ProtocolImpl(protocolConfig.getPort(),protocolConfig.getTransport(),protocolConfig.getMessage());
-        else
-            protocol = new ProtocolImpl(protocolConfig.getTransport(),protocolConfig.getMessage());
-        FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(protocol);
-        filterWrapProtocol.addFilter(new ExceptionFilter());
-        filterWrapProtocol.addFilter(new ResultSerializableCheckFilter());
+        Protocol protocol = createProtocol();
+        registerShutdownHook(protocol);
         URL url = URL.buildURL(interfaceClz.getName(), NetworkUtil.getLocalHostAddress(),protocol.getPort(),
-                protocolConfig.getTransport(),protocolConfig.getSerialization(),protocolConfig.getMessage(),methodConfigs);
+                protocolConfig.getTransport(),protocolConfig.getSerialization(),protocolConfig.getMessage(),weight,methodConfigs);
         ProxyFactory proxyFactory = ExtensionLoader.getExtension(ProxyFactory.class,protocolConfig.getProxy());
-        Exporter exporter = filterWrapProtocol.export(proxyFactory.getInvoker(serviceRef,interfaceClz, url));
-
+        Exporter exporter = protocol.export(proxyFactory.getInvoker(serviceRef,interfaceClz, url));
         if (exporter != null)
         {
             RegistryService registryService = registryConfig.getRegistryService();
@@ -104,7 +102,21 @@ public class ServiceConfig<T> implements InitializingBean{
         }
     }
 
-    private void registerShutdownHook()
+    private Protocol createProtocol()
+    {
+        Protocol protocol;
+        if (protocolConfig.getPort() != PROTOCOL_PORT_PLACE_HOLDER)
+            protocol = new ProtocolImpl(protocolConfig.getPort(),protocolConfig.getTransport(),protocolConfig.getMessage());
+        else
+            protocol = new ProtocolImpl(protocolConfig.getTransport(),protocolConfig.getMessage());
+        FilterWrapProtocol filterWrapProtocol = new FilterWrapProtocol(protocol);
+        filterWrapProtocol.addFilter(new ExceptionFilter());
+        filterWrapProtocol.addFilter(new ResultSerializableCheckFilter());
+        return filterWrapProtocol;
+    }
+
+
+    private void registerShutdownHook(final Protocol protocol)
     {
         Runtime.getRuntime().addShutdownHook(new Thread()
         {
@@ -112,12 +124,8 @@ public class ServiceConfig<T> implements InitializingBean{
             public void run()
             {
                 logger.info("Run shutdown hook...");
-                if (protocolConfig!= null)
-                {
-                    /*Protocol protocol = protocolConfig.getProtocol();
-                    if (protocol != null)
-                        protocol.destroy();*/
-                }
+                if (protocol != null)
+                    protocol.destroy();
             }
         });
     }

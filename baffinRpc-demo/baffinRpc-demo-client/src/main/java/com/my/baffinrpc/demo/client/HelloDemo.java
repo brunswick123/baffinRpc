@@ -14,7 +14,14 @@ public class HelloDemo {
     {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         HelloService helloService = applicationContext.getBean("helloService",HelloService.class);
-        System.out.println("result is " + helloService.hello("world",123));
+        while (true) {
+            System.out.println("result is " + helloService.hello("world", 123));
+            try {
+                Thread.sleep(1000 * 1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
        // System.out.println("result is " + helloService.hiPerson(new Person("world",new LocationAddress(0,"solar"))));
     }
 }

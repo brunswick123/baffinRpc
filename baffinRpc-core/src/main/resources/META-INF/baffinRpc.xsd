@@ -35,6 +35,7 @@
             <xsd:attribute name="name" type="xsd:string" use="required"/>
             <xsd:attribute name="interface" type="xsd:string" use="required"/>
             <xsd:attribute name="ref" type="xsd:string" use="required"/>
+            <xsd:attribute name="weight" type="xsd:int" use="optional"/>
         </xsd:complexType>
     </xsd:element>
 

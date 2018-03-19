@@ -17,12 +17,11 @@ public class TransportServerChannelHandler extends AbstractChannelHandler<Reques
         this.exchangeChannelHandler = exchangeChannelHandler;
     }
 
-
     @Override
     public void received(Channel channel, Request msg) throws Exception {
         if (msg.isHeartBeat())
         {
-            logger.info("heart beat from client");
+            logger.info("Heart beat from client");
             channelIdleCount.set(0);
         }
         else

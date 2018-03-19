@@ -90,11 +90,14 @@ public class HelloDemo {
 
 ## SPI
 
-baffinRpc 采用SPI机制实现程序的可扩展性,对于程序中的任意扩展点,可使用框架自带的扩展点实现,也可以自己实现扩展点来进行替换。
+baffinRpc 采用SPI机制实现程序的可扩展性,对于程序中的任意扩展点,可使用框架自带的扩展点实现,也可以根据扩展点接口自己实现。
 
 #### 扩展点
-* com.my.baffinrpc.core.protocol.proxy.ProxyFactory 
-* com.my.baffinrpc.core.communication.transport.TransportFactory
+
+###### @Extension
+框架内的扩展点采用@Extension注解标记,包括以下扩展点
+* com.my.baffinrpc.core.protocol.proxy.ProxyFactory
+* com.my.baffinrpc.core.communication.transport.TransportFactory 
 * com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy
 * com.my.baffinrpc.core.cluster.highavailable.HighAvailableStrategy
 * com.my.baffinrpc.core.common.serialization.Serialization

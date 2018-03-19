@@ -64,7 +64,6 @@ public class Invocation implements Serializable{
         return async;
     }
 
-
     public byte getSerializationType() {
         return serializationType;
     }

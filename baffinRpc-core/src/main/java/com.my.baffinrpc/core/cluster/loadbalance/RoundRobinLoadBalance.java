@@ -6,6 +6,9 @@ import com.my.baffinrpc.core.protocol.invoker.Invoker;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/***
+ * 轮询的负载均衡策略
+ */
 @ExtensionImpl(name = "roundRobin", extension = LoadBalanceStrategy.class)
 public class RoundRobinLoadBalance extends AbstractLoadBalanceStrategy {
 

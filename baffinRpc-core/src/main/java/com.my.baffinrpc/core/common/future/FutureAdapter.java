@@ -36,7 +36,11 @@ public class FutureAdapter<V> implements Future<V> {
     public V get() throws InterruptedException, ExecutionException {
         try {
             return (V)(responseFuture.get().recreateInvokeResult());
-        } catch (Throwable throwable) {
+        } catch (InterruptedException e)
+        {
+            throw e;
+        }
+        catch (Throwable throwable) {
             throw new ExecutionException(throwable);
         }
     }

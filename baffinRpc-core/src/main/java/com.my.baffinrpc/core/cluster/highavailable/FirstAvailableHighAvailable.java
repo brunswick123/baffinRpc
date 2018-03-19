@@ -5,6 +5,7 @@ import com.my.baffinrpc.core.cluster.ClusterInvoker;
 import com.my.baffinrpc.core.cluster.Directory;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
+import com.my.baffinrpc.core.common.exception.RPCNoServiceProviderException;
 import com.my.baffinrpc.core.common.model.Invocation;
 import com.my.baffinrpc.core.common.model.Result;
 import com.my.baffinrpc.core.protocol.invoker.Invoker;
@@ -31,6 +32,6 @@ public class FirstAvailableHighAvailable extends AbstractHighAvailableStrategy {
                 }
             }
         }
-        throw new RPCFrameworkException("no invoker available for" + invocation.getInterfaceName() + "." + invocation.getMethodName());
+        throw new RPCNoServiceProviderException("No invoker available for" + invocation.getInterfaceName() + "." + invocation.getMethodName());
     }
 }

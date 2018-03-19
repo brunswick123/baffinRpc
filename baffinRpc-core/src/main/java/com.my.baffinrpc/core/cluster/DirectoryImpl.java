@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class DirectoryImpl<T> implements Directory<T> {
 
-
     private List<URL> urls;
     private volatile Map<URL,Invoker> invokerMap;
     private Class<T> interfaceClz;
@@ -59,7 +58,7 @@ public class DirectoryImpl<T> implements Directory<T> {
             }
         }
         invokerMap = newInvokerMap;
-        logger.info("service urls changed for " + interfaceClz.getName() + ", new urls are " + urls.toString());
+        logger.info("Service urls changed for " + interfaceClz.getName() + ", new urls are " + urls.toString());
     }
 
     @Override

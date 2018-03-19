@@ -1,6 +1,7 @@
 package com.my.baffinrpc.core.config;
 
 import com.my.baffinrpc.core.cluster.*;
+import com.my.baffinrpc.core.cluster.highavailable.FailoverHighAvailable;
 import com.my.baffinrpc.core.cluster.highavailable.FirstAvailableHighAvailable;
 import com.my.baffinrpc.core.cluster.highavailable.HighAvailableStrategy;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;

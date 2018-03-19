@@ -47,6 +47,9 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                 Object serviceImplBeanReference = new RuntimeBeanReference(serviceImplBeanId);
                 builder.addPropertyValue("serviceRef",serviceImplBeanReference);
             }
+
+            //set weight
+            builder.addPropertyValue("weight",parseWeight(element));
             //set protocolConfig
             ProtocolConfig protocolConfig = parseProtocol(element,interfaceClass);
             builder.addPropertyValue("protocolConfig",protocolConfig);
@@ -62,7 +65,21 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
         }
     }
 
-
+    private int parseWeight(Element element)
+    {
+        String weightString = element.getAttribute("weight");
+        int weight = DefaultConfig.DEFAULT_WEIGHT;
+        if (!StringUtil.isEmptyOrNull(weightString))
+        {
+            try {
+                weight = Integer.parseInt(weightString);
+            }catch (Exception e)
+            {
+                throw new RPCConfigException("parse " + weightString + " to weight failed due to " + e);
+            }
+        }
+        return weight;
+    }
 
     private ProtocolConfig parseProtocol(Element element, Class<?> interfaceClass)
     {
@@ -147,7 +164,7 @@ public class ExportServiceBeanDefinitionParser implements BeanDefinitionParser {
                             callbackPort = protocolConfig.getPort() + 10;
                         //callback rpc use the same transport, serialize and message with the rpc that invoke callback
                         URL callbackURL = URL.buildURL(callbackInterface.getName(), NetworkUtil.getLocalHostAddress(),callbackPort,
-                                protocolConfig.getTransport(),protocolConfig.getSerialization(),protocolConfig.getMessage(),null);
+                                protocolConfig.getTransport(),protocolConfig.getSerialization(),protocolConfig.getMessage(),DefaultConfig.DEFAULT_WEIGHT,null);
                         CallbackInfo callbackInfo = new CallbackInfo(callbackInterface,callbackParameterIndex,callbackURL);
                         methodConfig.setCallback(true);
                         methodConfig.setCallbackInfo(callbackInfo);

@@ -2,7 +2,10 @@ package com.my.baffinrpc.core.spi;
 
 import com.my.baffinrpc.core.annotation.Extension;
 import com.my.baffinrpc.core.annotation.ExtensionImpl;
+import com.my.baffinrpc.core.common.exception.RPCConfigException;
 import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
+import com.my.baffinrpc.core.util.ReflectUtil;
+import com.my.baffinrpc.core.util.StringUtil;
 import org.reflections.Reflections;
 
 import java.util.HashMap;
@@ -37,16 +40,19 @@ public class ExtensionLoader {
         Set<Class<?>> allExtensionImpl = reflections.getTypesAnnotatedWith(ExtensionImpl.class);
         for (Class<?> clz : allExtensionImpl)
         {
+            if (ReflectUtil.isClassAbstract(clz))
+                throw new RPCConfigException(clz.getName() + " is an abstract class, cannot be an extension implementation");
             ExtensionImpl extensionImpl = clz.getAnnotation(ExtensionImpl.class);
             String name = extensionImpl.name();
+            if (StringUtil.isEmptyOrNull(name))
+                throw new RPCFrameworkException("Name field for @extensionImpl of " + clz.getName() + " cannot be null or empty");
             Class<?> extension = extensionImpl.extension();
             if (!allExtensions.contains(extension))
                 throw new RPCFrameworkException(extension.getName() + " is not a possible extension, and it cannot be the extension for " + clz.getName());
+
             HashMap<String,Class<?>> extensionImplMapForOneExtension = extensionImplMap.get(extension.getName());
             if (extensionImplMapForOneExtension == null)
-            {
                 extensionImplMapForOneExtension = new HashMap<>();
-            }
             extensionImplMapForOneExtension.put(name,clz);
             extensionImplMap.put(extension.getName(),extensionImplMapForOneExtension);
         }

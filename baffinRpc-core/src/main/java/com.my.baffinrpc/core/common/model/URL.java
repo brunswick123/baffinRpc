@@ -28,6 +28,7 @@ public class URL implements Serializable{
     public static final transient String MESSAGE = "message";
     public static final transient String SERIALIZATION = "serialization";
     private static final transient String PROXY = "proxy";
+    private static final transient String WEIGHT = "weight";
 
 
 
@@ -72,12 +73,13 @@ public class URL implements Serializable{
         //rpc://127.0.0.1:9999/com.my.baffinrpc.test.HelloService?hi.isAsync=true&hello.hasCallback=true&hello.callbackArgIndex=1
     }
 
-    public static URL buildURL(String interfaceName, String host, int port, String transport, String serializeTypeName, String message, List<MethodConfig> methodConfigs)
+    public static URL buildURL(String interfaceName, String host, int port, String transport, String serializeTypeName, String message, int weight, List<MethodConfig> methodConfigs)
     {
         Map<String,String> parameters = new HashMap<>();
         parameters.put(SERIALIZATION,serializeTypeName.toLowerCase());
         parameters.put(TRANSPORT,transport);
         parameters.put(MESSAGE,message);
+        parameters.put(WEIGHT,String.valueOf(weight));
         if (methodConfigs != null && methodConfigs.size() > 0) {
             for (MethodConfig methodConfig : methodConfigs) {
                 String methodName = methodConfig.getMethodName();
@@ -189,7 +191,7 @@ public class URL implements Serializable{
             String message = parameters.get(MESSAGE);
             try {
                 Class<?> callbackInterface = Class.forName(callbackInterfaceName);
-                URL callbackURL = URL.buildURL(callbackInterfaceName, NetworkUtil.getLocalHostAddress(),callbackPort,transport,serialization,message,null);
+                URL callbackURL = URL.buildURL(callbackInterfaceName, NetworkUtil.getLocalHostAddress(),callbackPort,transport,serialization,message,DefaultConfig.DEFAULT_WEIGHT,null);
                 return new CallbackInfo(callbackInterface, callbackIndex,callbackURL);
             } catch (ClassNotFoundException e) {
                 throw new RPCFrameworkException("callback interface with name " + callbackInterfaceName + " not found");
@@ -212,6 +214,11 @@ public class URL implements Serializable{
     public String getProxy()
     {
         return parameters.get(PROXY);
+    }
+
+    public int getWeight()
+    {
+        return Integer.parseInt(parameters.get(WEIGHT));
     }
 
 

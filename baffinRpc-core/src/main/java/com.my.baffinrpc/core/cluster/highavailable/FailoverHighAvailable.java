@@ -16,7 +16,8 @@ import java.util.List;
  */
 @ExtensionImpl(name = "failover",extension = HighAvailableStrategy.class)
 public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
-    private static final int allowRetryTime = 3;
+    private int allowRetryTime;
+
     @Override
     public <T> Result invoke(List<Invoker> invokers, ClusterInvoker clusterInvoker, Invocation invocation, Directory<T> directory, LoadBalanceStrategy loadBalanceStrategy) throws Exception {
         int retryCount = 0;
@@ -46,4 +47,6 @@ public class FailoverHighAvailable extends AbstractHighAvailableStrategy {
         }
         throw new RPCFrameworkException("invoke failed for " + invocation.getInterfaceName() + "." + invocation.getMethodName());
     }
+
+
 }

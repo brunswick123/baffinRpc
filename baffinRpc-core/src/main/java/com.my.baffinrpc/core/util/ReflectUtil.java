@@ -1,6 +1,7 @@
 package com.my.baffinrpc.core.util;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 public class ReflectUtil {
     public static Method findMethod(Class<?> clz, String methodName)
@@ -23,5 +24,10 @@ public class ReflectUtil {
                 return i;
         }
         return -1;
+    }
+
+    public static boolean isClassAbstract(Class<?> clz)
+    {
+        return Modifier.isAbstract(clz.getModifiers());
     }
 }

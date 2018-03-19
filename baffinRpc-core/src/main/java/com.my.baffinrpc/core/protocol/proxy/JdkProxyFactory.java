@@ -25,9 +25,4 @@ public class JdkProxyFactory extends AbstractProxyFactory {
         };
         return (T)Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{invoker.getInterface()},invocationHandler);
     }
-
-    @Override
-    public <T> Invoker getInvoker(final T instance, final Class<?> interfaceClz, URL url) {
-        return new WrapInvoker<>(url,interfaceClz, instance);
-    }
 }

@@ -17,19 +17,19 @@
     <rpc:registry address="192.168.13.99:2181" type="zookeeper" zookeeperClient="zk"/>
 
     <!--配置helloService服务-->
-    <rpc:exportService name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" ref="helloService">
+    <rpc:exportService name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" ref="helloService" weight="60">
         <!-- 配置服务使用端口-->
-        <rpc:protocol port="9088" transport="netty" serialization="kryo" proxy="javaassist"/>
+        <rpc:protocol port="9082" transport="netty" serialization="kryo" proxy="javaassist"/>
     </rpc:exportService>
 
    <!-- &lt;!&ndash;配置futureService服务&ndash;&gt;
     <rpc:exportService name="futureService" interface="com.my.baffinrpc.demo.api.FutureService" ref="futureService">
         &lt;!&ndash;配置为异步方法&ndash;&gt;
         <rpc:exportMethod name="getDate" async="true"/>
-    </rpc:exportService>-->
+    </rpc:exportService>
 
 
-    <!--&lt;!&ndash;配置callback服务&ndash;&gt;
+    &lt;!&ndash;配置callback服务&ndash;&gt;
     <rpc:exportService name="callbackService" interface="com.my.baffinrpc.demo.api.CallbackService" ref="callbackService">
         <rpc:protocol port="9718" transport="mina"/>
         &lt;!&ndash;设置callback所在方法&ndash;&gt;

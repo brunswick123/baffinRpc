@@ -44,7 +44,7 @@ public class RegistryBeanDefinitionParser implements BeanDefinitionParser {
 
         }
         else if (type.equals(TYPE_DIRECT))
-            throw new RPCConfigException(" Direct registry not supported");
+            throw new RPCConfigException("Direct registry not supported");
         return beanDefinition;
     }
 

@@ -2,7 +2,7 @@ package com.my.baffinrpc.core.cluster;
 
 import com.my.baffinrpc.core.cluster.highavailable.HighAvailableStrategy;
 import com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy;
-import com.my.baffinrpc.core.common.exception.RPCFrameworkException;
+import com.my.baffinrpc.core.common.exception.RPCNoServiceProviderException;
 import com.my.baffinrpc.core.common.model.Invocation;
 import com.my.baffinrpc.core.common.model.Result;
 import com.my.baffinrpc.core.common.model.URL;
@@ -23,10 +23,10 @@ public class ClusterInvoker implements Invoker {
     }
 
     @Override
-    public Result invoke(Invocation invocation) throws Exception {
+    public Result invoke(Invocation invocation) throws RPCNoServiceProviderException,Exception {
         List<Invoker> invokers = directory.getInvokers();
-        /*if (invokers == null || invokers.size() == 0)
-            throw new RPCFrameworkException("No invoker is found for " + getInterface().getName() + "." + invocation.getMethodName());*/
+        if (invokers == null || invokers.size() == 0)
+            throw new RPCNoServiceProviderException("No invoker is found for " + getInterface().getName() + "." + invocation.getMethodName());
         return highAvailableStrategy.invoke(invokers,this,invocation,directory,loadBalanceStrategy);
     }
 
