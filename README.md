@@ -95,7 +95,7 @@ baffinRpc 采用SPI机制实现程序的可扩展性,对于程序中的任意扩
 #### 扩展点
 
 ##### @Extension
-框架内的扩展点采用@Extension注解标记,包括以下扩展点
+框架内的扩展点采用@Extension注解标记,目前包括以下扩展点
 * com.my.baffinrpc.core.protocol.proxy.ProxyFactory
 * com.my.baffinrpc.core.communication.transport.TransportFactory 
 * com.my.baffinrpc.core.cluster.loadbalance.LoadBalanceStrategy
