@@ -41,15 +41,15 @@ public class FailbackHighAvailable extends AbstractHighAvailableStrategy {
                 return result;
             }catch (Exception e)
             {
-                logger.info(new Date() + "Invoke failed for " + invocation.getInterfaceName() + "." +
-                        invocation.getMethodName() + "due to " + e + ", try again in " + failbackDelayInMilliseconds + " milliseconds");
+                logger.info("Invoke failed for " + invocation.getInterfaceName() + "." +
+                        invocation.getMethodName() + " due to " + e + ", try again in " + failbackDelayInMilliseconds + " milliseconds");
                 addToFailedMap(invocation, clusterInvoker);
                 return ResultFactory.newVoidResult();
             }
         }
         else
         {
-            logger.info(new Date() + "invoker == null for " + invocation.getInterfaceName() + "." + invocation.getMethodName() +
+            logger.info("invoker == null for " + invocation.getInterfaceName() + "." + invocation.getMethodName() +
                     ", try again in " + failbackDelayInMilliseconds + " milliseconds");
             addToFailedMap(invocation, clusterInvoker);
             return ResultFactory.newVoidResult();
@@ -70,14 +70,12 @@ public class FailbackHighAvailable extends AbstractHighAvailableStrategy {
                         public void run() {
                             if (failedMap.size() > 0)
                             {
-                                for(Map.Entry<Invocation,Invoker> entry: failedMap.entrySet())
-                                {
+                                for(Map.Entry<Invocation,Invoker> entry: failedMap.entrySet()) {
                                     Invocation invocation = entry.getKey();
                                     Invoker invoker = entry.getValue();
                                     try {
                                         invoker.invoke(invocation);
-                                    }catch (Exception e)
-                                    {
+                                    }catch (Exception e) {
                                         logger.error("Retry invoke failed again due to " + e + ", try again later");
                                     }
                                 }

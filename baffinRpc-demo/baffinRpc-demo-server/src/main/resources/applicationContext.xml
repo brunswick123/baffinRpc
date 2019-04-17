@@ -14,7 +14,7 @@
     <bean id="exceptionService" class="com.my.baffinrpc.demo.server.impl.ExceptionServiceImpl"/>
 
     <!--配置zookeeper-->
-    <rpc:registry address="192.168.13.99:2181" type="zookeeper" zookeeperClient="zk"/>
+    <rpc:registry address="127.0.0.1:2181" type="zookeeper" zookeeperClient="zk"/>
 
     <!--配置helloService服务-->
     <rpc:exportService name="helloService" interface="com.my.baffinrpc.demo.api.HelloService" ref="helloService" weight="60">

@@ -65,8 +65,9 @@ public class ExtensionLoader {
         String cachedMapKey = clz.getName()+ "." + extensionImplName + ".class";
         //先从缓存中获取
         Object instance = cachedInstanceMap.get(cachedMapKey);
-        if (instance != null)
-            return (T)instance;
+        if (instance != null) {
+            return (T) instance;
+        }
         //缓存中不存在,获取Class，再用newInstance()创建
         //根据extension找到所有的extensionImpl,再由extensionImplName找到class
         HashMap<String,Class<?>> extensionImplMapForOneExtension = extensionImplMap.get(clz.getName());

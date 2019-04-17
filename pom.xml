@@ -16,7 +16,7 @@
 
     <properties>
         <logger4j.version>1.2.17</logger4j.version>
-        <spring.version>4.3.13.RELEASE</spring.version>
+        <spring.version>4.3.18.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
     </properties>
 
