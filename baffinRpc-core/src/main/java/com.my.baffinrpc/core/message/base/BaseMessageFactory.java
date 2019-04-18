@@ -8,24 +8,22 @@ import com.my.baffinrpc.core.message.*;
 import java.util.UUID;
 
 @ExtensionImpl(name = "base",extension = MessageFactory.class)
-public class BaseMessageFactory extends AbstractMessageFactory{
+public class BaseMessageFactory extends AbstractMessageFactory<UUID>{
 
     public BaseMessageFactory() {
         super(new BaseMessageCodec());
     }
 
     @Override
-    public Request newRequest(Invocation invocation) {
+    public Request<UUID> newRequest(Invocation invocation) {
         return new BaseRequest(invocation, UUID.randomUUID());
     }
 
     @Override
-    public Request newHeartBeatRequest() {
+    public Request<UUID> newHeartBeatRequest() {
         return new BaseRequest((byte)0);
     }
 
-    @Override
-    public Response newResponse(Result result, Request request) {
-        return new BaseResponse(result,request.getMessageId(),request.getSerializeType());
-    }
+
+
 }

@@ -3,12 +3,12 @@ package com.my.baffinrpc.core.message;
 import java.io.Serializable;
 import java.util.UUID;
 
-public abstract class AbstractMessage implements Message,Serializable {
-    private final UUID messageId;
+public abstract class AbstractMessage<MessageId> implements Message<MessageId>,Serializable {
+    private final MessageId messageId;
     private final byte serializeType;
     private final boolean heartBeat;
 
-    protected AbstractMessage(UUID messageId, byte serializeType, boolean heartBeat) {
+    protected AbstractMessage(MessageId messageId, byte serializeType, boolean heartBeat) {
         this.messageId = messageId;
         this.serializeType = serializeType;
         this.heartBeat = heartBeat;
@@ -16,7 +16,7 @@ public abstract class AbstractMessage implements Message,Serializable {
 
 
     @Override
-    public UUID getMessageId() {
+    public MessageId getMessageId() {
         return messageId;
     }
 

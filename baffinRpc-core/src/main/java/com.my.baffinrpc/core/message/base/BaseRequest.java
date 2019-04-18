@@ -6,7 +6,7 @@ import com.my.baffinrpc.core.message.Request;
 
 import java.util.UUID;
 
-public class BaseRequest extends AbstractMessage implements Request {
+public class BaseRequest extends AbstractMessage<UUID> implements Request<UUID> {
 
     private final Invocation invocation;
 

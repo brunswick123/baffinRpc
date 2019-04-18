@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ResponseFutureImpl implements ResponseFuture<Result> {
 
-    private final static Map<UUID,ResponseFutureImpl> FUTURE_MAP = new ConcurrentHashMap<>();
+    private final static Map<Object,ResponseFutureImpl> FUTURE_MAP = new ConcurrentHashMap<>();
     private volatile Result result;
     private AtomicBoolean done = new AtomicBoolean(false);
     private final CountDownLatch latch = new CountDownLatch(1);
@@ -36,7 +36,7 @@ public class ResponseFutureImpl implements ResponseFuture<Result> {
         return done.get();
     }
 
-    public static Map<UUID, ResponseFutureImpl> futureMap() {
+    public static Map<Object, ResponseFutureImpl> futureMap() {
         return FUTURE_MAP;
     }
 

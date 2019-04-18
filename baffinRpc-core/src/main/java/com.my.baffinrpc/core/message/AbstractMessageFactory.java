@@ -1,15 +1,27 @@
 package com.my.baffinrpc.core.message;
 
-public abstract class AbstractMessageFactory implements MessageFactory {
+import com.my.baffinrpc.core.common.model.Result;
 
-    private final Codec<Message> codec;
 
-    public AbstractMessageFactory(Codec<Message> codec) {
+public abstract class AbstractMessageFactory<MessageId> implements MessageFactory<MessageId> {
+
+    private final Codec<Message<MessageId>> codec;
+
+    public AbstractMessageFactory(Codec<Message<MessageId>> codec) {
         this.codec = codec;
     }
 
     @Override
-    public Codec<Message> getMessageCodec() {
+    public Codec<Message<MessageId>> getMessageCodec() {
         return codec;
     }
+
+    @Override
+    public Response<MessageId> newResponse(final Result result, final Request<MessageId> request) {
+        return new DefaultResponse<>(result,request.getMessageId(),request.getSerializeType());
+    }
+
+
+
+
 }

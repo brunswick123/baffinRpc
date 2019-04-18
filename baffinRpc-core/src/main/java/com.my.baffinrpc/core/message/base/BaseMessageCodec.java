@@ -8,11 +8,12 @@ import com.my.baffinrpc.core.message.Codec;
 import com.my.baffinrpc.core.message.Message;
 
 import java.io.IOException;
+import java.util.UUID;
 
-public class BaseMessageCodec implements Codec<Message> {
+public class BaseMessageCodec implements Codec<Message<UUID>> {
 
     @Override
-    public Message decode(ByteBuffer byteBuffer) throws IOException, ClassNotFoundException {
+    public Message<UUID> decode(ByteBuffer byteBuffer) throws IOException, ClassNotFoundException {
         if (byteBuffer.readableBytes() <= 1)
             return null;
         else
